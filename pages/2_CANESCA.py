@@ -37,7 +37,7 @@ def canescamap():
     m = folium.Map(location=[-10, 30], zoom_start=4.5)
 
     attr = 'Tiles Courtesy of Stadia'
-    tiles = 'https://tiles.stadiamaps.com/tiles/osm_bright/{z}/{x}/{y}{r}.png?'+st.secrets['stadiamaps']
+    tiles = 'https://tiles.stadiamaps.com/tiles/osm_bright/{z}/{x}/{y}{r}.png?api_key='+st.secrets['stadiamaps']
 
     tile_layer = folium.TileLayer(
     tiles=tiles,
