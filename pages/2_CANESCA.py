@@ -6,6 +6,7 @@ import geopandas as gpd
 from streamlit_folium import st_folium
 from folium.plugins import MarkerCluster
 from streamlit_extras.row import row 
+from nav import insert_nav
 
 st.set_page_config(page_title='CANESCA', page_icon=':earth_americas:', layout='wide', initial_sidebar_state='collapsed')
 
@@ -70,13 +71,7 @@ def canescamap():
 
 
 #######################################################################################
-row1 = row([1,2,2,3])
-
-row1.page_link('gaws.py',label='Anesthesia Workforce')
-row1.page_link('pages/2_CANESCA.py',label='Anesthesiologists in East, Central and Southern Africa')
-row1.page_link('pages/3_OHNS.py',label='OHNS Workforce')
-
-
+insert_nav()
 
 st.title('Anesthesiologists in East, Central and Southern Africa')
 

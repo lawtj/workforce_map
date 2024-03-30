@@ -6,6 +6,7 @@ import geopandas as gpd
 from streamlit_folium import st_folium
 from streamlit_extras.row import row 
 import branca.colormap as cm
+from nav import insert_nav
 
 
 st.set_page_config(page_title='OHNS', page_icon=':ear:', layout='wide', initial_sidebar_state='collapsed')
@@ -45,11 +46,7 @@ def ohnsmap(country):
     return m
 
 ############################################################################################################
-row1 = row([1,2,2,3])
-
-row1.page_link('gaws.py',label='Anesthesia Workforce')
-row1.page_link('pages/2_CANESCA.py',label='Anesthesiologists in East, Central and Southern Africa')
-row1.page_link('pages/3_OHNS.py',label='OHNS Workforce')
+insert_nav()
 left,center, right = st.columns([1, 3,1])
 with left:
     st.write('')
