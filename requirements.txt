@@ -3,3 +3,4 @@ streamlit_folium
 pandas
 geopandas
 branca
+streamlit_extras
