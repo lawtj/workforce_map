@@ -5,7 +5,6 @@ from folium.plugins import Search, GroupedLayerControl
 import pandas as pd
 import geopandas as gpd
 import branca.colormap as cm
-import streamlit.components.v1 as components
 import branca.colormap as cm
 
 st.set_page_config(layout="wide", page_title='Global Surgery and Anesthesia Workforce Maps', page_icon='🌍', initial_sidebar_state='collapsed')
