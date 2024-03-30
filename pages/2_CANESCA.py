@@ -65,4 +65,4 @@ st.title('Anesthesiologists in East, Central and Southern Africa')
 st_folium(canescamap(),use_container_width=True)
 
 # st.dataframe(pd.DataFrame(read_gdf()))
-st.write(read_csv())
+# st.write(read_csv())
