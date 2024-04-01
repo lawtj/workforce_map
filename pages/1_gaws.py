@@ -168,7 +168,7 @@ def createnpapmap(gdf):
 
 def writestats(message, col):
     # if out['last_active_drawing']['properties'][col] is not None:
-    if isinstance(out['last_active_drawing']['properties'][col], float):
+    if isinstance(out['last_active_drawing']['properties'][col], float) or isinstance(out['last_active_drawing']['properties'][col], int):
         st.write(message, round(out['last_active_drawing']['properties'][col],2))
     else:
         st.write(message, 'Data not available')
@@ -223,7 +223,7 @@ with right:
         st.write('Please select a country to view statistics.')
     else:
         st.subheader(out['last_active_drawing']['properties']['NAME'])
-        if isinstance(out['last_active_drawing']['properties']['population'], float):
+        if isinstance(out['last_active_drawing']['properties']['population'], float) or isinstance(out['last_active_drawing']['properties']['population'], int):
             st.write('**Population**: ', round(out['last_active_drawing']['properties']['population']/10,1), ' million')
         else:
             st.write('**Population**: ', 'Data not available')
