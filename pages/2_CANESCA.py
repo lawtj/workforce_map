@@ -7,6 +7,9 @@ from streamlit_folium import st_folium
 from folium.plugins import MarkerCluster
 from streamlit_extras.row import row 
 from nav import insert_nav
+import os
+from dotenv import load_dotenv
+
 
 st.set_page_config(page_title='CANESCA', page_icon=':earth_americas:', layout='wide', initial_sidebar_state='collapsed')
 
@@ -37,7 +40,11 @@ def canescamap():
     m = folium.Map(location=[-10, 30], zoom_start=4.5)
 
     attr = 'Tiles Courtesy of Stadia'
-    tiles = 'https://tiles.stadiamaps.com/tiles/osm_bright/{z}/{x}/{y}{r}.png?api_key='+st.secrets['stadiamaps']
+    if os.path.exists(".streamlit/secrets.toml"):
+        tiles = 'https://tiles.stadiamaps.com/tiles/osm_bright/{z}/{x}/{y}{r}.png?api_key='+st.secrets['stadiamaps']
+    else:
+        load_dotenv()
+        tiles = 'https://tiles.stadiamaps.com/tiles/osm_bright/{z}/{x}/{y}{r}.png?api_key='+os.environ.get('stadiamaps')
 
     tile_layer = folium.TileLayer(
     tiles=tiles,
