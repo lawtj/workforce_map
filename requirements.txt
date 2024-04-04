@@ -4,4 +4,4 @@ pandas
 geopandas
 branca
 streamlit_extras
-dotenv
+python-dotenv
