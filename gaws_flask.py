@@ -16,11 +16,11 @@ def gaws():
 
 @app.route("/canesca")
 def CANESCA():
-    return render_template("pages/CANESCA.html")
+    return render_template("pages/canesca.html")
 
 @app.route("/ohns")
 def OHNS():
-    return render_template("pages/OHNS.html")
+    return render_template("pages/ohns.html")
 
 if __name__ == "__main__":
     app.run(debug=True)
