@@ -14,5 +14,13 @@ def tailwind():
 def gaws():
     return render_template("pages/gaws.html")
 
+@app.route("/canesca")
+def CANESCA():
+    return render_template("pages/CANESCA.html")
+
+@app.route("/ohns")
+def OHNS():
+    return render_template("pages/OHNS.html")
+
 if __name__ == "__main__":
     app.run(debug=True)

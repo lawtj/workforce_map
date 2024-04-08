@@ -4,15 +4,26 @@
 {% include 'includes/head.html' %}
 {% include 'includes/nav.html' %}
 
-<body>
-    <div class="container">
-        <p class="title is-1 has-text-centered pb-4">Global Anesthesia Workforce Map</p>
-    <iframe
-    src="https://workforce-map.streamlit.app/gaws/?embed=true&embed_options=light_theme"
-    style="width: 100%; height:99vh; border: none; display:block;"
-    >
-    </iframe>
-</div>
+<body>    
+    <section class="hero is-small has-background-primary-80">
+        <div class="hero-body">
+            <p class="title is-1 has-text-centered pb-4 has-text-primary-dark">Global Anesthesia Workforce</p>
+        </div>
+        </section>
+
+        <div class="container content is-max-desktop mt-6 mb-6">
+            <p>This map shows the number of Physician Anesthesia Providers (PAPs) per 100,000 population. Data is derived from the Global Anesthesia Workforce Survey published in 2024.</p>
+            <p class="is-italic has-text-weight-light">Law, Tyler J., Michael S. Lipnick, Wayne Morriss, Adrian W. Gelb, et al. 2024. “The Global Anesthesia Workforce Survey: Updates and Trends in the Anesthesia Workforce.” Anesthesia & Analgesia, March, 10.1213/ANE.0000000000006836.</p>
+        </div>
+
+        <div class="container">
+    
+            <iframe
+            src="https://workforce-embed.streamlit.app/gaws/?embed=true&embed_options=light_theme"
+            style="width: 100%; height:99vh; border: none; display:block;"
+            >
+            </iframe>
+        </div>
 
 </body>
 
