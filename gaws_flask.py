@@ -3,8 +3,16 @@ from flask import Flask, render_template
 app = Flask(__name__)
 
 @app.route("/")
-def home():
+def bulma():
+    return render_template("bulma.html")
+
+@app.route("/tailwind")
+def tailwind():
     return render_template("home.html")
+
+@app.route("/gaws")
+def gaws():
+    return render_template("pages/gaws.html")
 
 if __name__ == "__main__":
     app.run(debug=True)
