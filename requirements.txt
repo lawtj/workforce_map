@@ -6,3 +6,4 @@ branca
 streamlit_extras
 python-dotenv
 gunicorn
+flask
