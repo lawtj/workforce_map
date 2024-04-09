@@ -7116,7 +7116,7 @@ button.dropdown-item.is-selected {
 }
 
 :root {
-  --bulma-navbar-height: 3.25rem;
+  --bulma-navbar-height: 4.25rem;
 }
 
 .navbar {

@@ -2,8 +2,9 @@
 <nav class="navbar is-white is-fixed-top">
     <nav class="navbar-brand">
         <a href="/" class="navbar-item">
-            <img src="static/images/icon_alpha.png" alt="Logo" height="160">
+            <img src="static/images/icon_alpha.png" alt="Logo">
         </a>
+
         <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false" data-target="nav_menu">
             <span aria-hidden="true"></span>
             <span aria-hidden="true"></span>
@@ -12,19 +13,23 @@
     </nav>
     <nav class="navbar-menu" id="nav_menu">
         <nav class="navbar-start">
-            <a href="/" class="navbar-item">Home</a>
+            <a href="/" class="navbar-item has-text-weight-bold has-text-bold">Home</a>
         </nav>
         <nav class="navbar-end">
             <div class="navbar-item has-dropdown is-hoverable">
-                <a href="#" class="navbar-link">Maps</a>
+                <a class="navbar-link">
+                    <span class="icon has-text-primary">
+                        <i class="fas fa-2x fa-earth-africa"></i>
+                  </span>
+                  <span class="mx-2 has-text-primary has-text-weight-semibold">Maps</span></a>
                 <div class="navbar-dropdown is-right">
                     <a href="/gaws" class="navbar-item">Global Anesthesia Workforce Map</a>
                     <a href="/canesca" class="navbar-item">Anesthesiologists in Central, East, and Southern Africa</a>
                     <a href="/ohns" class="navbar-item">Global Otolaryngologist/ENT Workforce map</a>
                 </div>
             </div>
-            <a href="#" class="navbar-item">About</a>
-            <a href="#" class="navbar-item">Contact</a>
+            <a href="#" class="navbar-item"><span class="icon has-text-success"><i class="fas fa-2x fa-fingerprint"></i></span><span class="has-text-success mx-2 has-text-weight-semibold">About</span></a>
+            <a href="#" class="navbar-item"><span class="icon has-text-danger"><i class="fa-regular fa-paper-plane"></i></span><span class="has-text-danger has-text-weight-semibold mx-2">Contact</span></a>
         </nav>
     </nav>
 </nav>
