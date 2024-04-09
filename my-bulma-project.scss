@@ -1,6 +1,20 @@
 @use "bulma/sass" with (
     // $primary: hsl(240,100%,50.2%)
-    $primary: hsl(216,87.2%,15.3%)
+    
+    // ucsf dark
+    // $primary: hsl(216,87.2%,15.3%)
+
+    // ucsf lighter blue
+    // $primary: hsl(220,80.4%, 30%),
+
+    // ucsf light blue 3
+    $primary: hsl(201, 80%, 44%),
+
+    // ucsf light green
+    $success: hsl(127, 52%, 41%),
+
+    $link: hsl(325, 66%, 46%),
+    
     
 );
 

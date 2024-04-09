@@ -12,7 +12,7 @@
                         Global Surgical and Anesthesia Workforce Mapping Project
                     </p>
                     <p class="subtitle pt-6 is-4 has-text-primary-bold">
-                        Visualizing the world's surgical workforce
+                        Visualizing the world's perioperative workforce
                     </p>
                 </div>
                 <div class="column">
@@ -24,48 +24,43 @@
 </section>
 <section class="section">
 
-    <div class="container">
-        <p class="title is-4 has-text-centered pb-4">Our Mission</p>
+    <div class="container pb-6">
+        <p class="title is-4 has-text-centered">Our Mission</p>
+        <div class="box">
+            Our mission is to create a unified, accessible hub for exploring the global perioperative workforce. Recognizing the fragmented nature of information in the global surgery space, our platform aims to consolidate various workforce maps into a single, user-friendly interface. This initiative is not just about data aggregation; it's a step towards greater collaboration and understanding in global healthcare. By providing a comprehensive view of the perioperative workforce worldwide, we empower researchers, policymakers, and healthcare professionals to make informed decisions, foster connections, and ultimately, improve surgical care globally.
+        </div>
     </div>
 
     <div class="container">
         <p class="title is-4 has-text-centered pb-4">Our Maps</p>
     </div>
 
+
     <div class="container columns">
         <div class="column">
-            <div class="card">
-                <div class="card-header">
-                    <p class="card-header-title">
-                        Global Anesthesia Workforce Map
-                    </p>
-                </div>
-                <div class="card-content">Anesthesia provider numbers by country, provider density, and Non-physician providers (Nurse Anesthetists and others)</div>
-                <div class="card-footer has-background-info"><a href="/gaws" class='card-footer-item has-text-primary-bold has-text-weight-semibold'>Go</a></div>
-            </div>
+        {% set card_title = "Global Anesthesia Workforce Map" %}
+        {% set card_content = "<p>Anesthesia provider numbers by country, provider density (per 100,000 population), and Non-physician providers (Nurse Anesthetists and others).</p><br> <p>Also includes comparison to previous Workforce Survey.</p>" %}
+        {% set card_href = "/gaws" %}
+        {% set card_imgref = "static/images/card_gaws.png" %}
+        {% include 'includes/cards.html' %}
         </div>
-        <div class="column">
-            <div class="card">
-                <div class="card-header">
-                    <p class="card-header-title">
-                        Anesthesiologists in Central, East, and Southern Africa
-                    </p>
-                </div>
-                <div class="card-content">Explore the locations of working anesthesiologists in the Central, East, and Southern Africa region. Showing hospital locations.</div>
-                <div class="card-footer"><a href="#" class='card-footer-item'>Go</a></div>
-            </div>
-        </div>
-        <div class="column">
-            <div class="card">
-                <div class="card-header">
-                    <p class="card-header-title">
-                        Global Otolaryngologist/ENT Workforce map
-                    </p>
-                </div>
-                <div class="card-content">card content</div>
-                <div class="card-footer"><a href="#" class='card-footer-item'>Go</a></div>
 
-            </div>
+        <div class="column">
+        {% set card_title = "Anesthesiologists in Central, East, and Southern Africa" %}
+        {% set card_content = "Explore the locations of working anesthesiologists in the Central, East, and Southern Africa region. <p>See providers at the level of the individual hospital, and aggregated by district</p>." %}
+        {% set card_href = "/canesca" %}
+        {% set card_imgref = "static/images/card_canesca.png" %}
+        {% include 'includes/cards.html' %}
         </div>
+
+        <div class="column">
+        {% set card_title = "Global Otolaryngologist/ENT Workforce" %}
+        {% set card_content = "Number of ENT physicians per country, and per 100,000 population (density) <br><br><br><br><br>" %}
+        {% set card_href = "/ohns" %}
+        {% set card_imgref = "static/images/card_ohns.png" %}
+        {% include 'includes/cards.html' %}
+        </div>
+
     </div>
+
 {% endblock %}

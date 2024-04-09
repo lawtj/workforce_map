@@ -9,10 +9,10 @@
 {% block content %}
 {% include 'includes/hero_subpage.html' with context %}
 
-<div class="container ">
+<div class="container px-4">
     <div class="columns mt-6 mb-4 is-8">
-        <div class="content column is-two-thirds">
-            <p class="title is-6">About this map:</p>
+        <div class="content column is-two-thirds ">
+            <p class="title is-6 box has-background-success-soft has-text-success-dark">About this map:</p>
             <p>The Global OHNS initiative performed a recent study quantifying the number of otolaryngology-head and neck surgery (OHNS) care clinicians per capita worldwide. This was done by disseminating a cross-sectional electronic survey to professional society leaders, medical licensing boards, public health officials, and practicing OHNS clinicians. </p>
             <p>Respondents from 114 countries comprising 84% of the world population estimate a workforce density of 2.19 OHNS clinicians per 100 000 population. Variations were noted by World Health Organization regions and World Bank income groups.</p>
             <p>This cross-sectional survey study provides a comprehensive assessment of the global OHNS workforce. These results can guide focused investment in training and policy development to address disparities in the availability of OHNS clinicians.</p>
@@ -21,23 +21,23 @@
 
         </div>
         <div class="column">
-            <div class="dropdown is-hoverable">
-                    <div class="dropdown-trigger">
-                        <div class="button ml-auto">
-                            <span>View citation</span>
-            
-                            <div class="block ml-3 mr-3">
-                                <span class="bulma-arrow-mixin"></span>
-                            </div>
+                <div class="dropdown is-hoverable">
+                        <div class="dropdown-trigger">
+                            <button class="button">
+                                <span>View citation</span>
+                
+                                <div class="block ml-3 mr-3">
+                                    <span class="bulma-arrow-mixin"></span>
+                                </div>
+                            </button>
+                        </div>
+                                
+                <div class="dropdown-menu">
+                    <div class="dropdown-content">
+                        <div class="dropdown-item is-italic has-text-weight-semibold">Petrucci, Beatriz, Samuel Okerosi, Rolvix H. Patterson, Sara B. Hobday, Valerie Salano, Christopher J. Waterworth, Robert M. Brody, et al. 2023. <a href='https://jamanetwork.com/journals/jamaotolaryngology/fullarticle/2808978' target="_blank">“The Global Otolaryngology-Head and Neck Surgery Workforce.”</a> JAMA Otolaryngology-- Head & Neck Surgery, August. https://doi.org/10.1001/jamaoto.2023.2339.</div>
                         </div>
                     </div>
-                            
-            <div class="dropdown-menu">
-                <div class="dropdown-content">
-                    <div class="dropdown-item ">Petrucci, Beatriz, Samuel Okerosi, Rolvix H. Patterson, Sara B. Hobday, Valerie Salano, Christopher J. Waterworth, Robert M. Brody, et al. 2023. <a href='#'>“The Global Otolaryngology-Head and Neck Surgery Workforce.”</a> JAMA Otolaryngology-- Head & Neck Surgery, August. https://doi.org/10.1001/jamaoto.2023.2339.</div>
-                    </div>
                 </div>
-            </div>
         </div>
 
     
