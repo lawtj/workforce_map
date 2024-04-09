@@ -22433,4 +22433,33 @@ has-background-danger.is-hoverable:active {
   pointer-events: all !important;
 }
 
+.bulma-arrow-mixin {
+  border: 0.125em solid blue;
+  border-right: 0;
+  border-top: 0;
+  content: " ";
+  display: block;
+  height: 0.625em;
+  margin-top: -0.4375em;
+  pointer-events: none;
+  position: absolute;
+  top: 50%;
+  transform: rotate(-45deg);
+  transform-origin: center;
+  transition-duration: var(--bulma-duration);
+  transition-property: border-color;
+  width: 0.625em;
+}
+
+.bulma-fa-mixin {
+  display: inline-block;
+  font-size: 1rem;
+  height: 2rem;
+  line-height: 2rem;
+  text-align: center;
+  vertical-align: top;
+  width: 2rem;
+  background-color: lavender;
+}
+
 /*# sourceMappingURL=my-bulma-project.css.map */

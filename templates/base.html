@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html data-theme="light">
+
+{% include 'includes/head.html' %}
+
+<title>{% block title %}Home{% endblock %}</title>
+
+<body>
+    {% include 'includes/nav.html' %}
+
+    {% block content %}
+    {% endblock %}
+
+</body>
+
+</html>

@@ -1,12 +1,12 @@
-<!DOCTYPE html>
-<html data-theme="light">
+{% extends "base.html" %}
 
-{% include 'includes/head.html' %}
-{% include 'includes/nav.html' %}
+{% block content %}
+{% set hero_text = "Anesthesiologists in East, Central and Southern Africa" %}
+{% set hero_subtitle = "Point locations and hospital of practicing anesthesiologists" %}
 
-<body>
-    <div class="container">
-        <p class="title is-1 has-text-centered pb-4">Anesthesiologists in East, Central and Southern Africa</p>
+{% include 'includes/hero_subpage.html' with context %}
+
+<div class="container mt-6">
     <iframe
     src="https://workforce-embed.streamlit.app/CANESCA/?embed=true&embed_options=light_theme"
     style="width: 100%; height:75vh; border: none; display:block;"
@@ -14,6 +14,4 @@
     </iframe>
 </div>
 
-</body>
-
-</html>
+{% endblock %}

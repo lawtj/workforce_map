@@ -1,34 +1,53 @@
-<!DOCTYPE html>
-<html data-theme="light">
+{% extends 'base.html' %}
 
-{% include 'includes/head.html' %}
-{% include 'includes/nav.html' %}
+{% block title %}Global ENT/OHNS Workforce{% endblock %}
 
-<body>
-    <section class="hero is-small has-background-primary-80">
-        <div class="hero-body">
-            <p class="title is-1 has-text-centered pb-4 has-text-primary-dark">Global ENT/OHNS Workforce</p>
+{% set hero_text = "Global ENT/OHNS Workforce" %}
+{% set hero_subtitle = "Number of OHNS physicians per 100,000 population (density)" %}
+
+
+{% block content %}
+{% include 'includes/hero_subpage.html' with context %}
+
+<div class="container ">
+    <div class="columns mt-6 mb-4 is-8">
+        <div class="content column is-two-thirds">
+            <p class="title is-6">About this map:</p>
+            <p>The Global OHNS initiative performed a recent study quantifying the number of otolaryngology-head and neck surgery (OHNS) care clinicians per capita worldwide. This was done by disseminating a cross-sectional electronic survey to professional society leaders, medical licensing boards, public health officials, and practicing OHNS clinicians. </p>
+            <p>Respondents from 114 countries comprising 84% of the world population estimate a workforce density of 2.19 OHNS clinicians per 100 000 population. Variations were noted by World Health Organization regions and World Bank income groups.</p>
+            <p>This cross-sectional survey study provides a comprehensive assessment of the global OHNS workforce. These results can guide focused investment in training and policy development to address disparities in the availability of OHNS clinicians.</p>
+            <p>Below are interactive maps to display the results from this study.</p>
+
+
         </div>
-    </section>
-    <div class="container is-max-desktop">
-
-            <div class="content mt-6 mb-6">
-                <p>The Global OHNS initiative performed a recent study quantifying the number of otolaryngology-head and neck surgery (OHNS) care clinicians per capita worldwide. This was done by disseminating a cross-sectional electronic survey to professional society leaders, medical licensing boards, public health officials, and practicing OHNS clinicians. </p>
-                <p>Respondents from 114 countries comprising 84% of the world population estimate a workforce density of 2.19 OHNS clinicians per 100 000 population. Variations were noted by World Health Organization regions and World Bank income groups.</p>
-                <p>This cross-sectional survey study provides a comprehensive assessment of the global OHNS workforce. These results can guide focused investment in training and policy development to address disparities in the availability of OHNS clinicians.</p>
-                <p>Below are interactive maps to display the results from this study.</p>
+        <div class="column">
+            <div class="dropdown is-hoverable">
+                    <div class="dropdown-trigger">
+                        <div class="button ml-auto">
+                            <span>View citation</span>
+            
+                            <div class="block ml-3 mr-3">
+                                <span class="bulma-arrow-mixin"></span>
+                            </div>
+                        </div>
+                    </div>
+                            
+            <div class="dropdown-menu">
+                <div class="dropdown-content">
+                    <div class="dropdown-item ">Petrucci, Beatriz, Samuel Okerosi, Rolvix H. Patterson, Sara B. Hobday, Valerie Salano, Christopher J. Waterworth, Robert M. Brody, et al. 2023. <a href='#'>“The Global Otolaryngology-Head and Neck Surgery Workforce.”</a> JAMA Otolaryngology-- Head & Neck Surgery, August. https://doi.org/10.1001/jamaoto.2023.2339.</div>
+                    </div>
+                </div>
             </div>
+        </div>
 
-
+    
     </div>
-    <div class="container">
-        <iframe
-        src="https://workforce-embed.streamlit.app/OHNS/?embed=true&embed_options=light_theme"
-        style="width: 100%; height:75vh; border: none; display:block;"
-        >
-        </iframe>
-    </div>
-
-</body>
-
-</html>
+</div>
+<div class="container">
+    <iframe
+    src="https://workforce-embed.streamlit.app/OHNS/?embed=true&embed_options=light_theme"
+    style="width: 100%; height:75vh; border: none; display:block;"
+    >
+    </iframe>
+</div>
+{% endblock %}

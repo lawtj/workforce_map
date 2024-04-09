@@ -1,20 +1,52 @@
-<!DOCTYPE html>
-<html data-theme="light">
+{% extends "base.html" %}
 
-{% include 'includes/head.html' %}
-{% include 'includes/nav.html' %}
+{% block title %}Global Anesthesia Workforce{% endblock %}
+{% block content %}
 
-<body>    
-    <section class="hero is-small has-background-primary-80">
-        <div class="hero-body">
-            <p class="title is-1 has-text-centered pb-4 has-text-primary-dark">Global Anesthesia Workforce</p>
+{% set hero_text = "Global Anesthesia Workforce" %}
+{% set hero_subtitle = "Number of Physician Anesthesia Providers (PAPs) per 100,000 population" %}
+
+{% include 'includes/hero_subpage.html' with context %}
+
+<div class="container ">
+    <div class="columns mt-6 mb-4 is-8">
+        <div class="content column is-two-thirds">
+            <p class="title is-6">About this map:</p>
+            <p>This map shows three layers of anesthesia workforce data. 
+                <ul>
+                    <li>Number of Physician Anesthesia Providers (PAPs) per 100,000 population</li>
+                    <li>Number of Non-Physician Anesthesia Providers (NPAPs) per 100,000 population</li>
+                    <li>Number of Physician Anesthesia Providers (PAPs) per 100,000 population in 2016 (per the previous WFSA Workforce Survey)</li>
+                    
+                </ul>
+            </p>
+            <p>In 2016, the World Federation of Societies of Anaesthesiologists performed the first survey of the global anesthesia workforce. Data is derived from the Global Anesthesia Workforce Survey published in 2024.</p>
+
         </div>
-        </section>
-
-        <div class="container content is-max-desktop mt-6 mb-6">
-            <p>This map shows the number of Physician Anesthesia Providers (PAPs) per 100,000 population. Data is derived from the Global Anesthesia Workforce Survey published in 2024.</p>
-            <p class="is-italic has-text-weight-light">Law, Tyler J., Michael S. Lipnick, Wayne Morriss, Adrian W. Gelb, et al. 2024. “The Global Anesthesia Workforce Survey: Updates and Trends in the Anesthesia Workforce.” Anesthesia & Analgesia, March, 10.1213/ANE.0000000000006836.</p>
+        <div class="column">
+            <div class="dropdown is-hoverable">
+                    <div class="dropdown-trigger">
+                        <div class="button ml-auto">
+                            <span>View citation</span>
+            
+                            <div class="block ml-3 mr-3">
+                                <span class="bulma-arrow-mixin"></span>
+                            </div>
+                        </div>
+                    </div>
+                            
+            <div class="dropdown-menu">
+                <div class="dropdown-content">
+                    <div class="dropdown-item "><p class="is-italic has-text-weight-light">Law, Tyler J., Michael S. Lipnick, Wayne Morriss, Adrian W. Gelb, et al. 2024. <a href='#'>“The Global Anesthesia Workforce Survey: Updates and Trends in the Anesthesia Workforce.” </a>Anesthesia & Analgesia, March, 10.1213/ANE.0000000000006836.</p>
+                    </div>
+                    </div>
+                </div>
+            </div>
         </div>
+
+    
+    </div>
+</div>
 
         <div class="container">
     
@@ -25,6 +57,4 @@
             </iframe>
         </div>
 
-</body>
-
-</html>
+{% endblock %}
