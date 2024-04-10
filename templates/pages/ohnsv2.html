@@ -1,0 +1,223 @@
+{% extends 'base.html' %}
+
+
+{% block head %}
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+crossorigin=""/>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+crossorigin=""></script>
+
+<script type="text/javascript" src="./static/geojson/ohns_leaflet.geojson"></script>
+
+<script src="https://d3js.org/d3.v6.min.js"></script>
+
+
+
+<style>#map{height: 400px}</style>
+
+<style>.info.legend {
+    background: white;
+    background: rgba(255,255,255,0.9);
+    box-shadow: 0 0 15px rgba(0,0,0,0.2);
+    border-radius: 5px;
+    padding: 5px 10px;
+    line-height: 18px;
+    color: #555;
+}
+
+.legend-gradient {
+    display: flex;
+    height: 10px;
+    margin-bottom: 5px;
+}
+
+.legend-gradient i {
+    flex-grow: 1;
+    height: 100%;
+}
+
+.legend-labels {
+    display: flex;
+    justify-content: space-between;
+}</style>
+
+{% endblock %}
+
+{% block title %}Global ENT/OHNS Workforce{% endblock %}
+
+{% block content %}
+
+{% set hero_text = "Global ENT/OHNS Workforce" %}
+{% set hero_subtitle = "Number of OHNS physicians per 100,000 population (density)" %}
+
+{% include 'includes/hero_subpage.html' %}
+
+<div class="container px-4">
+    <div class="columns mt-6 mb-4 is-8">
+        <div class="content column is-two-thirds ">
+            <p class="title is-6 box has-background-success-soft has-text-success-bold"><span class='icon'><i class="fas fa-earth"></i></span>About this map:</p>
+            <p>The Global OHNS initiative performed a recent study quantifying the number of otolaryngology-head and neck surgery (OHNS) care clinicians per capita worldwide. This was done by disseminating a cross-sectional electronic survey to professional society leaders, medical licensing boards, public health officials, and practicing OHNS clinicians. </p>
+            <p>Respondents from 114 countries comprising 84% of the world population estimate a workforce density of 2.19 OHNS clinicians per 100 000 population. Variations were noted by World Health Organization regions and World Bank income groups.</p>
+            <p>This cross-sectional survey study provides a comprehensive assessment of the global OHNS workforce. These results can guide focused investment in training and policy development to address disparities in the availability of OHNS clinicians.</p>
+            <p>Below are interactive maps to display the results from this study.</p>
+
+
+        </div>
+        <div class="column">
+                <div class="dropdown is-hoverable">
+                        <div class="dropdown-trigger">
+                            <button class="button">
+                                <span>View citation</span>
+                
+                                <div class="block ml-3 mr-3">
+                                    <span class="bulma-arrow-mixin"></span>
+                                </div>
+                            </button>
+                        </div>
+                                
+                <div class="dropdown-menu">
+                    <div class="dropdown-content">
+                        <div class="dropdown-item is-italic has-text-weight-semibold">Petrucci, Beatriz, Samuel Okerosi, Rolvix H. Patterson, Sara B. Hobday, Valerie Salano, Christopher J. Waterworth, Robert M. Brody, et al. 2023. <a href='https://jamanetwork.com/journals/jamaotolaryngology/fullarticle/2808978' target="_blank">“The Global Otolaryngology-Head and Neck Surgery Workforce.”</a> JAMA Otolaryngology-- Head & Neck Surgery, August. https://doi.org/10.1001/jamaoto.2023.2339.</div>
+                        </div>
+                    </div>
+                </div>
+        </div>
+
+    
+    </div>
+</div>
+
+
+<div class='container my-6' id="map" style="height:600px"></div>
+
+
+{% endblock %}
+
+{% block scripts %}
+
+<script>
+const map = L.map('map').setView([44.653024159812, 15.732421875000002], 2);
+
+const tiles = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+		maxZoom: 19,
+		attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+	}).addTo(map);
+
+var colorScale = d3.scaleSequential(d3.interpolateBuGn)
+    .domain([0, 11]);
+
+//style function
+function styleGeo(geojson){
+    var value = geojson.properties['Oral, Head & Neck Surgeons per Capita'];
+    // check if value is null or undefined
+    if (value === null || value === undefined) {
+        return {
+            fillColor: 'black',
+            fillOpacity: 0.1,
+            color: 'black',
+            opacity: 1,
+            weight: 1
+        };
+        
+    }
+    return{
+            fillColor: colorScale(value),
+            fillOpacity: 1,
+            color: 'black',
+            opacity: 1,
+            weight: 1
+        };
+
+}
+
+//what to do on highlight
+function highlightGeo(e){
+    var layer = e.target;
+    layer.setStyle({
+        fillOpacity: 0.5,
+        weight: 3
+    })
+};
+
+//what to do on mouseout
+function resetGeo(e){
+    geojson.resetStyle(e.target);
+};
+
+function onEachFeature(feature, layer) {
+    var tooltipContent = '';
+
+    // Check for and add the country name
+    if (feature.properties && feature.properties['NAME_LONG']) {
+        tooltipContent += '<strong>Country:</strong> ' + feature.properties['NAME_LONG'];
+    }
+
+    // Add 'Oral, Head & Neck Surgeons per Capita' data or 'No data' if unavailable
+    tooltipContent += '<br><strong>Oral, Head & Neck Surgeons per Capita:</strong> ';
+    tooltipContent += (feature.properties && feature.properties['Oral, Head & Neck Surgeons per Capita']) ? 
+                      feature.properties['Oral, Head & Neck Surgeons per Capita'] : 'No data';
+
+    // Add 'Oral, Head & Neck Surgeons' data or 'No data' if unavailable
+    tooltipContent += '<br><strong>Oral, Head & Neck Surgeons:</strong> ';
+    tooltipContent += (feature.properties && feature.properties['Oral, Head, & Neck Surgeons']) ? 
+                      feature.properties['Oral, Head, & Neck Surgeons'] : 'No data';
+
+    // Bind the constructed tooltip content
+    layer.bindTooltip(tooltipContent);
+
+    // Event handlers
+    layer.on({
+        mouseover: highlightGeo,
+        mouseout: resetGeo,
+        // click: zoomToFeature
+    });
+};
+
+
+const geojson = L.geoJSON(ohnsData, {
+    style: styleGeo,
+    onEachFeature: onEachFeature
+    }
+).addTo(map);
+
+var legend = L.control({ position: 'topright' });
+
+legend.onAdd = function (map) {
+    var div = L.DomUtil.create('div', 'info legend'),
+        grades = [0, 11], // Start and end points of your domain
+        labelPoints = [0, 2, 4, 6, 7, 9, 11], // Points where labels will be added
+        n = 256, // Number of different colors to represent in the gradient
+        gradientHTML = '',
+        labelsHTML = '<div class="legend-labels">';
+
+    // Add labels
+    for (var j = 0; j < labelPoints.length; j++) {
+        labelsHTML += `<span style="left:${(labelPoints[j] / grades[1] * 100)}%">${labelPoints[j]}</span>`;
+    }
+    labelsHTML += '</div>';
+
+    // Create a gradient by iterating over a range of values
+    for (var i = 0; i < n; i++) {
+        var value = grades[0] + i * (grades[1] - grades[0]) / n;
+        var color = colorScale(value);
+        gradientHTML += `<i style="background-color:${color};"></i>`;
+    }
+
+    // Add labels and gradient bar to the legend
+    div.innerHTML = labelsHTML + '<div class="legend-gradient">' + gradientHTML + '</div>';
+
+    // Add caption
+    div.innerHTML += '<div><strong>OHNS Density per 100,000 Population</strong><br></div>';
+
+    return div;
+};
+
+
+legend.addTo(map);
+</script>
+
+
+{% endblock %}

@@ -20,7 +20,11 @@ def CANESCA():
 
 @app.route("/ohns")
 def OHNS():
-    return render_template("pages/ohns.html")
+    return render_template("pages/ohnsv2.html")
+
+@app.route("/folium")
+def folium():
+    return render_template("pages/ohnsv2.html")
 
 if __name__ == "__main__":
     app.run(debug=True)
