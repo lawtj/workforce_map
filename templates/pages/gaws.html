@@ -1,4 +1,13 @@
-{% extends "includes/aboutpage.html" %}
+{% extends "layouts/map_page.html" %}
+
+{% block head %}
+    {{ super() }}
+    <script type="text/javascript" src="./static/geojson/papgeo.geojson"></script>
+    <script type="text/javascript" src="./static/geojson/papgeo_datatable.json"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.13.8/dist/cdn.min.js"></script>
+
+
+{% endblock %}
 
 {% block title %}Global Anesthesia Workforce{% endblock %}
 
@@ -89,15 +98,115 @@
         </div>
     </div>
 </div>
+
+<section class="container my-6" x-data="tableHandler()">
+    <div class="title">Data Table</div>
+    <div class="columns">
+        <div class='column is-one-third'>
+            <div class="field">
+                <div class="control">
+                    <input class="input is-rounded is-focused" type="text" placeholder="Search" x-model="search">
+                </div>
+            </div>
+        </div>
+        <div class="column">
+            
+        </div>
+    </div>
+    <div class="container" style="max-height: 500px; overflow-y: auto; min-height: 500px">
+        <table class="table is-striped is-hoverable" >
+            <thead>
+                <tr>
+                    <th>Country</th>
+                    <th>Total PAPs</th>
+                    <th>Total PAP Density</th>
+                    <th>PAPs in 2016</th>
+                    <th>PAP Density in 2016</th>
+                    <th>Total NPAPs</th>
+                    <th>Total NPAP Density</th>
+                    <th>NPAPs in 2016</th>
+                    <th>NPAP Density in 2016</th>
+                <tr>
+            </thead>
+            <tbody>
+                <template x-for="row in filteredData()" :key="row.NAME || 'default_'+ index">
+                    <tr>
+                        <td x-text="row.NAME "></td>
+                        <td x-text="roundInt(row.totalpap)"></td>
+
+                        <td x-text="roundOrNot(row.totalpap_cap)"></td>
+
+                        <td x-text="roundInt(row.physicians2015)"></td>
+                        <td x-text="roundOrNot(row.physicians2015_cap)"></td>
+                        <td x-text="roundInt(row.totalnpap)"></td>
+                        <td x-text="roundOrNot(row.totalnpap_cap)"></td>
+                        <td x-text="roundInt(row.nurses2015)"></td>
+                        <td x-text="roundOrNot(row.nurses2015_cap)"></td>
+                    </tr>
+                </template>
+            </tbody>
+        </table>
+    </div>
+
+</section>
 {% endblock %}
-
-
-
-
 
 {% block scripts %}
 
-<script type="text/javascript" src="./static/geojson/papgeo.geojson"></script>
+<script>
+
+function tableHandler() {
+    return {
+        data: papData.features,
+        search: "",
+        filteredData() {
+            // sort data
+            this.data.sort((a, b) => {
+                return a.properties.NAME.localeCompare(b.properties.NAME);
+            });
+            return this.data.filter(row => {
+                return row.properties.NAME.toLowerCase().includes(this.search.toLowerCase());
+            }).map(row => {
+                return {
+                    NAME: row.properties.NAME,
+                    totalpap_cap: row.properties.totalpap_cap,
+                    totalpap: row.properties.totalpap,
+                    physicians2015: row.properties.physicians2015,
+                    physicians2015_cap: row.properties.physicians2015_cap,
+                    totalnpap: row.properties.totalnpap,
+                    totalnpap_cap: row.properties.totalnpap_cap,
+                    nurses2015: row.properties.nurses2015,
+                    nurses2015_cap: row.properties.nurses2015_cap
+                };
+            });
+        },
+
+        roundOrNot(value) {
+
+        if (value === 'No data' || value === 0 || value === null || isNaN(value)) {
+            return '-';
+        } else {
+            var parsed = parseFloat(value);
+        // Check if 'parsed' is a number and is not NaN
+        return parsed.toFixed(2);
+        }
+    },
+
+        roundInt(value) {
+            if (value === 'No data' || value === 0 || value === null || isNaN(value)) {
+                return '-';
+            } else {
+                var rounded = Math.round(value);
+                // console.log(rounded)
+                return rounded.toLocaleString()
+        }
+    },
+}
+};
+
+
+</script>
+
 
 <script>
     const map = L.map('map').setView([24.653024159812, 15.732421875000002], 3);
@@ -236,7 +345,7 @@
                 mouseover: highlightGeo,
                 mouseout: resetGeo,
                 click: function (e) {
-                    console.log(featureProperties);
+                    
                     document.getElementById('country-name').innerHTML = feature.properties['NAME'];
                     if (featureProperties['population'] === 'No data' || featureProperties['population'] === null || isNaN(featureProperties['population'])) {
                         document.getElementById('country-population').innerHTML = 'Population: No data';

@@ -1,6 +1,12 @@
-{% extends 'includes/aboutpage.html' %}
+{% extends 'layouts/map_page.html' %}
 
+{% block head %}
 
+    {{ super() }}
+
+    <script type="text/javascript" src="./static/geojson/ohns_leaflet.geojson"></script>
+
+{% endblock %}
 
 {% block title %}Global ENT/OHNS Workforce{% endblock %}
 
@@ -30,7 +36,6 @@
 {% endblock %}
 
 {% block scripts %}
-<script type="text/javascript" src="./static/geojson/ohns_leaflet.geojson"></script>
 
 <script>
     const map = L.map('map').setView([44.653024159812, 15.732421875000002], 2);
