@@ -45,6 +45,11 @@
         display: flex;
         justify-content: space-between;
     }
+
+
+    .leaflet-container :focus:not(:focus-visible) {
+  outline: 0;
+}
 </style>
 
 {% endblock %}
@@ -75,16 +80,9 @@
 
                             <div class="dropdown-menu">
                                 <div class="dropdown-content">
-                                    <div class="dropdown-item ">
-                                        <p class="is-italic has-text-weight-semibold">Law, Tyler J., Michael S. Lipnick,
-                                            Wayne
-                                            Morriss, Adrian W. Gelb, et al. 2024. <a
-                                                href='https://journals.lww.com/anesthesia-analgesia/fulltext/9900/the_global_anesthesia_workforce_survey__updates.788.aspx'
-                                                target="_blank">“The Global Anesthesia Workforce Survey: Updates and Trends
-                                                in the
-                                                Anesthesia Workforce.” </a>Anesthesia & Analgesia, March,
-                                            10.1213/ANE.0000000000006836.</p>
-                                    </div>
+                                    {% block citation %}
+
+                                    {% endblock %}
                                 </div>
                             </div>
                         </div>

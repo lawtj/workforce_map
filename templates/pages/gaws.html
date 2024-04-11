@@ -3,7 +3,7 @@
 {% block head %}
     {{ super() }}
     <script type="text/javascript" src="./static/geojson/papgeo.geojson"></script>
-    <script type="text/javascript" src="./static/geojson/papgeo_datatable.json"></script>
+    <!-- <script type="text/javascript" src="./static/geojson/papgeo_datatable.json"></script> -->
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.13.8/dist/cdn.min.js"></script>
 
 
@@ -30,13 +30,27 @@
 <p>In 2016, the World Federation of Societies of Anaesthesiologists performed the first survey of the global anesthesia
     workforce. Data is derived from the Global Anesthesia Workforce Survey published in 2024.</p>
 
+<p class="has-text-weight-bold"><a href='#data-table'>View the data table. <span class='icon'><i class="fa-solid fa-turn-down"></i></span></a></p>
 
+{% endblock %}
+
+{% block citation %}
+<div class="dropdown-item">
+    <p class="is-italic has-text-weight-semibold">Law, Tyler J., Michael S. Lipnick,
+        Wayne
+        Morriss, Adrian W. Gelb, et al. 2024. <a
+            href='https://journals.lww.com/anesthesia-analgesia/fulltext/9900/the_global_anesthesia_workforce_survey__updates.788.aspx'
+            target="_blank">“The Global Anesthesia Workforce Survey: Updates and Trends
+            in the
+            Anesthesia Workforce.” </a>Anesthesia & Analgesia, March,
+        10.1213/ANE.0000000000006836.</p>
+</div>
 {% endblock %}
 
 {% block map %}
 <div class="container px-4">
     <div class="columns">
-        <div class="container column is-three-quarters" id="map" style="height:750px"></div>
+        <div class="container column is-three-quarters" id="map" style="height:600px"></div>
         <div class="container column">
             <div class="card">
                 <div class="card-header " id="card-header">
@@ -50,10 +64,6 @@
                     <p class="has-text-weight-semibold has-background-light">Physician Data</p>
                     <table class="table is-fullwidth is-narrow is-hoverable">
                         <tbody>
-                            <!-- <tr class='is-light'> -->
-                            <!-- <td><strong>Population</strong></td> -->
-                            <!-- <td id="country-population"></td> -->
-                            <!-- </tr> -->
                             <tr>
                                 <td><strong>Total PAPs</strong></td>
                                 <td id="country-totalpap"></td>
@@ -100,7 +110,7 @@
 </div>
 
 <section class="container my-6" x-data="tableHandler()">
-    <div class="title">Data Table</div>
+    <div class="title" id="data-table">Data Table</div>
     <div class="columns">
         <div class='column is-one-third'>
             <div class="field">
@@ -110,22 +120,24 @@
             </div>
         </div>
         <div class="column">
-            
+
         </div>
     </div>
     <div class="container" style="max-height: 500px; overflow-y: auto; min-height: 500px">
         <table class="table is-striped is-hoverable" >
             <thead>
                 <tr>
-                    <th>Country</th>
-                    <th>Total PAPs</th>
-                    <th>Total PAP Density</th>
-                    <th>PAPs in 2016</th>
-                    <th>PAP Density in 2016</th>
-                    <th>Total NPAPs</th>
-                    <th>Total NPAP Density</th>
-                    <th>NPAPs in 2016</th>
-                    <th>NPAP Density in 2016</th>
+
+                    <th>Country <span class='icon' x-on:click="sort('NAME')"><i class="fa-solid fa-sort"></i></span></th>
+                    <th>Total PAPs <span class='icon' x-on:click="sort('totalpap')"><i class="fa-solid fa-sort"></i></span></th>
+                    <th>Total PAP Density <span class='icon' x-on:click="sort('totalpap_cap')"><i class="fa-solid fa-sort"></i></span></th>
+                    <th>PAPs in 2016 <span class='icon' x-on:click="sort('physicians2015')"><i class="fa-solid fa-sort"></i></span></th>
+                    <th>PAP Density in 2016 <span class='icon' x-on:click="sort('physicians2015_cap')"><i class="fa-solid fa-sort"></i></span></th>
+                    <th>Total NPAPs <span class='icon' x-on:click="sort('totalnpap')"><i class="fa-solid fa-sort"></i></span></th>
+                    <th>Total NPAP Density <span class='icon' x-on:click="sort('totalnpap_cap')"><i class="fa-solid fa-sort"></i></span></th>
+                    <th>NPAPs in 2016 <span class='icon' x-on:click="sort('nurses2015')"><i class="fa-solid fa-sort"></i></span></th>
+                    <th>NPAP Density in 2016 <span class='icon' x-on:click="sort('nurses2015_cap')"><i class="fa-solid fa-sort"></i></span></th>
+            
                 <tr>
             </thead>
             <tbody>
@@ -155,61 +167,101 @@
 
 <script>
 
-function tableHandler() {
-    return {
-        data: papData.features,
-        search: "",
-        filteredData() {
-            // sort data
-            this.data.sort((a, b) => {
-                return a.properties.NAME.localeCompare(b.properties.NAME);
-            });
-            return this.data.filter(row => {
-                return row.properties.NAME.toLowerCase().includes(this.search.toLowerCase());
-            }).map(row => {
-                return {
-                    NAME: row.properties.NAME,
-                    totalpap_cap: row.properties.totalpap_cap,
-                    totalpap: row.properties.totalpap,
-                    physicians2015: row.properties.physicians2015,
-                    physicians2015_cap: row.properties.physicians2015_cap,
-                    totalnpap: row.properties.totalnpap,
-                    totalnpap_cap: row.properties.totalnpap_cap,
-                    nurses2015: row.properties.nurses2015,
-                    nurses2015_cap: row.properties.nurses2015_cap
-                };
-            });
-        },
+    function tableHandler() {
+            return {
+                search: "",
+                sortColumn: 'NAME',
+                sortAsc: true,
+                data: papData.features.map(item => {
 
-        roundOrNot(value) {
+                    for (const key in item.properties) {
+                        if (item.properties[key] === 0 || item.properties[key] === 'No data') {
+                            item.properties[key] = null;
+                        }
+                    }
+                    return item;
+                }),
 
-        if (value === 'No data' || value === 0 || value === null || isNaN(value)) {
-            return '-';
-        } else {
-            var parsed = parseFloat(value);
-        // Check if 'parsed' is a number and is not NaN
-        return parsed.toFixed(2);
-        }
-    },
+                sortData() {
+                    if (this.sortColumn !== null) {
+                        this.data.sort((a, b) => {
+                            // Handle null or undefined values
+                            if (a.properties[this.sortColumn] == null) return 1; // Push null or undefined to the end
+                            if (b.properties[this.sortColumn] == null) return -1;
 
-        roundInt(value) {
-            if (value === 'No data' || value === 0 || value === null || isNaN(value)) {
-                return '-';
-            } else {
-                var rounded = Math.round(value);
-                // console.log(rounded)
-                return rounded.toLocaleString()
-        }
-    },
-}
-};
+                            // Normal sorting
+                            if (a.properties[this.sortColumn] < b.properties[this.sortColumn]) {
+                                return this.sortAsc ? -1 : 1;
+                            }
+                            if (a.properties[this.sortColumn] > b.properties[this.sortColumn]) {
+                                return this.sortAsc ? 1 : -1;
+                            }
+                            return 0;
+                        });
+                    }
+                },
+
+                // ... other methods ...
+                filteredData() {
+                    // sort data
+                    this.sortData(); // Call sort before filtering
+
+                    return this.data.filter(row => {
+                        console.log(row)
+                        return row.properties.NAME.toLowerCase().includes(this.search.toLowerCase());
+                    }).map(row => {
+                        return {
+                            NAME: row.properties.NAME,
+                            totalpap_cap: row.properties.totalpap_cap,
+                            totalpap: row.properties.totalpap,
+                            physicians2015: row.properties.physicians2015,
+                            physicians2015_cap: row.properties.physicians2015_cap,
+                            totalnpap: row.properties.totalnpap,
+                            totalnpap_cap: row.properties.totalnpap_cap,
+                            nurses2015: row.properties.nurses2015,
+                            nurses2015_cap: row.properties.nurses2015_cap
+                        };
+                    });
+                },
+
+                roundOrNot(value) {
+
+                    if (value === 'No data' || value === 0 || value === null || isNaN(value)) {
+                        return null;
+                    } else {
+                        var parsed = parseFloat(value);
+                        // Check if 'parsed' is a number and is not NaN
+                        return parsed.toFixed(2);
+                    }
+                },
+
+                roundInt(value) {
+                    if (value === 'No data' || value === 0 || value === null || isNaN(value)) {
+                        return null;
+                    } else {
+                        var rounded = Math.round(value);
+                        // console.log(rounded)
+                        return rounded.toLocaleString()
+                    }
+                },
+                sort(column) {
+                    console.log(column)
+                    if (this.sortColumn === column) {
+                        this.sortAsc = !this.sortAsc; // Toggle sort direction
+                    } else {
+                        this.sortColumn = column;
+                        this.sortAsc = true; // Default to ascending when a new column is sorted
+                    }
+                },
+            }
+        };
 
 
 </script>
 
 
 <script>
-    const map = L.map('map').setView([24.653024159812, 15.732421875000002], 3);
+    const map = L.map('map').setView([24.653024159812, 10.732421875000002], 2);
 
     const tiles = L.tileLayer('https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png', {
         maxZoom: 19,
@@ -397,7 +449,7 @@ function tableHandler() {
         // Generate a label with a colored square for each interval
         for (var i = 0; i < grades.length; i++) {
             div.innerHTML +=
-                '<span><i style="background:' + getColor(grades[i]) + '"></i> ' +
+                '<span ><i style="background: ' + getColor(grades[i]) + '; width: 18px; height: 18px; display: inline-block;"></i> ' +
                 (grades[i] + (grades[i + 1] ? '&ndash;' + grades[i + 1] : '+')) + '</span> ';
         }
 

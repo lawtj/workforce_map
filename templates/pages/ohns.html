@@ -2,9 +2,11 @@
 
 {% block head %}
 
-    {{ super() }}
+{{ super() }}
 
-    <script type="text/javascript" src="./static/geojson/ohns_leaflet.geojson"></script>
+<script type="text/javascript" src="./static/geojson/ohns_leaflet.geojson"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.13.8/dist/cdn.min.js"></script>
+
 
 {% endblock %}
 
@@ -14,42 +16,179 @@
 {% set hero_subtitle = "Number of OHNS physicians per 100,000 population (density)" %}
 
 {% block about_content %}
-    <p>The Global OHNS initiative performed a recent study quantifying the number of otolaryngology-head and neck surgery
-        (OHNS) care clinicians per capita worldwide. This was done by disseminating a cross-sectional electronic survey to
-        professional society leaders, medical licensing boards, public health officials, and practicing OHNS clinicians.
-    </p>
-    <p>Respondents from 114 countries comprising 84% of the world population estimate a workforce density of 2.19 OHNS
-        clinicians per 100 000 population. Variations were noted by World Health Organization regions and World Bank income
-        groups.</p>
-    <p>This cross-sectional survey study provides a comprehensive assessment of the global OHNS workforce. These results can
-        guide focused investment in training and policy development to address disparities in the availability of OHNS
-        clinicians.</p>
-    <p>Below are interactive maps to display the results from this study.</p>
-    
+<p>The Global OHNS initiative performed a recent study quantifying the number of otolaryngology-head and neck surgery
+    (OHNS) care clinicians per capita worldwide. This was done by disseminating a cross-sectional electronic survey to
+    professional society leaders, medical licensing boards, public health officials, and practicing OHNS clinicians.
+</p>
+<p>Respondents from 114 countries comprising 84% of the world population estimate a workforce density of 2.19 OHNS
+    clinicians per 100 000 population. Variations were noted by World Health Organization regions and World Bank income
+    groups.</p>
+<p>This cross-sectional survey study provides a comprehensive assessment of the global OHNS workforce. These results can
+    guide focused investment in training and policy development to address disparities in the availability of OHNS
+    clinicians.</p>
+<p>Below are interactive maps to display the results from this study.</p>
+
+<p class="has-text-weight-bold"><a href='#data-table'>View the data table. <span class='icon'><i class="fa-solid fa-turn-down"></i></span></a></p>
+
+
+{% endblock %}
+
+{% block citation %}
+<div class="dropdown-item ">
+    <p class="is-italic has-text-weight-semibold">Petrucci, Beatriz, Samuel Okerosi, Rolvix H. Patterson, Sara B.
+        Hobday, Valerie Salano, Christopher J. Waterworth, Robert M. Brody, et al. 2023. <a
+            href='https://jamanetwork.com/journals/jamaotolaryngology/fullarticle/2808978' target="_blank">“The Global
+            Otolaryngology-Head and Neck Surgery Workforce.”</a> JAMA Otolaryngology-- Head & Neck Surgery, August.
+        https://doi.org/10.1001/jamaoto.2023.2339.</p>
+</div>
+
 {% endblock %}
 
 {% block map %}
 
+<div class="container">
     <div class='container my-6' id="map" style="height:600px"></div>
+</div>
+<section class="container my-6" x-data="tableHandler()">
+    <div class="title" id="data-table">Data Table</div>
+    <div class="columns">
+        <div class='column is-one-third'>
+            <div class="field">
+                <div class="control">
+                    <input class="input is-rounded is-focused" type="text" placeholder="Search" x-model="search">
+                </div>
+            </div>
+        </div>
+        <div class="column">
+
+        </div>
+    </div>
+    <div class="container" style="max-height: 500px; overflow-y: auto; min-height: 500px">
+        <table class="table is-striped is-hoverable is-fullwidth">
+            <thead>
+                <tr>
+                    <th>Country <span class='icon' x-on:click="sort('NAME_LONG')"><i class="fa-solid fa-sort"></i></span></th>
+                    <th>OHNS per 100,000 Population <span class='icon' x-on:click="sort('Oral, Head & Neck Surgeons per Capita')"><i class="fa-solid fa-sort"></i></span></th>
+                    <th>OHNS Clinicians <span class='icon' x-on:click="sort('Oral, Head, & Neck Surgeons')"><i class="fa-solid fa-sort"></i></span></th>
+                </tr>
+            </thead>
+            <tbody>
+                <template x-for="item in filteredData()" :key="item.NAME_LONG || 'default_' + index" >
+                    <tr>
+                        <td  x-text="item['NAME_LONG']"></td>
+                        <td x-text="item['Oral, Head & Neck Surgeons per Capita']"></td>
+                        <td x-text="item['Oral, Head, & Neck Surgeons']"></td>
+                    </tr>
+                </template>
+            </tbody>
+        </table>
+    </div>
+</section>
+
+
 
 
 {% endblock %}
 
 {% block scripts %}
 
+<!-- data table script -->
+<script>
+    function tableHandler() {
+        return {
+                search: "",
+                sortColumn: 'NAME_LONG',
+                sortAsc: true,
+                data: ohnsData.features.map(item => {
+
+                    for (const key in item.properties) {
+                        if (item.properties[key] === 0 || item.properties[key] === 'No data') {
+                            item.properties[key] = null;
+                        }
+                    }
+                    return item;
+                }),
+
+                sortData() {
+                    if (this.sortColumn !== null) {
+                        this.data.sort((a, b) => {
+                            // Handle null or undefined values
+                            if (a.properties[this.sortColumn] == null) return 1; // Push null or undefined to the end
+                            if (b.properties[this.sortColumn] == null) return -1;
+
+                            // Normal sorting
+                            if (a.properties[this.sortColumn] < b.properties[this.sortColumn]) {
+                                return this.sortAsc ? -1 : 1;
+                            }
+                            if (a.properties[this.sortColumn] > b.properties[this.sortColumn]) {
+                                return this.sortAsc ? 1 : -1;
+                            }
+                            return 0;
+                        });
+                    }
+                },
+    
+            filteredData() {
+                this.sortData(); // Call sort before filtering
+
+                return this.data.filter((item) => {
+                    return item.properties.NAME_LONG.toLowerCase().includes(this.search.toLowerCase());
+                }).map(item => {
+                    return {
+                        NAME_LONG: item.properties.NAME_LONG,
+                        'Oral, Head & Neck Surgeons per Capita': item.properties['Oral, Head & Neck Surgeons per Capita'],
+                        'Oral, Head, & Neck Surgeons': item.properties['Oral, Head, & Neck Surgeons']
+                    }
+                });
+            },
+
+            sort(column) {
+                if (this.sortColumn === column) {
+                    this.sortAsc = !this.sortAsc; // Toggle sort direction
+                } else {
+                    this.sortColumn = column;
+                    this.sortAsc = true; // Default to ascending when a new column is sorted
+                }
+            },
+            roundOrNot(value) {
+
+                if (value === 'No data' || value === 0 || value === null || isNaN(value)) {
+                    return null;
+                } else {
+                    var parsed = parseFloat(value);
+                    // Check if 'parsed' is a number and is not NaN
+                    return parsed.toFixed(2);
+                }
+            },
+
+            roundInt(value) {
+                if (value === 'No data' || value === 0 || value === null || isNaN(value)) {
+                    return null;
+                } else {
+                    var rounded = Math.round(value);
+                    // console.log(rounded)
+                    return rounded.toLocaleString()
+                }
+            },
+
+        }
+    }
+    </script>
+    
+
 <script>
     const map = L.map('map').setView([44.653024159812, 15.732421875000002], 2);
-    
+
     const tiles = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            maxZoom: 19,
-            attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-        }).addTo(map);
-    
+        maxZoom: 19,
+        attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+    }).addTo(map);
+
     var colorScale = d3.scaleSequential(d3.interpolateBuGn)
         .domain([0, 11]);
-    
+
     //style function
-    function styleGeo(geojson){
+    function styleGeo(geojson) {
         var value = geojson.properties['Oral, Head & Neck Surgeons per Capita'];
         // check if value is null or undefined
         if (value === null || value === undefined) {
@@ -60,53 +199,53 @@
                 opacity: 1,
                 weight: 1
             };
-            
+
         }
-        return{
-                fillColor: colorScale(value),
-                fillOpacity: 1,
-                color: 'black',
-                opacity: 1,
-                weight: 1
-            };
-    
+        return {
+            fillColor: colorScale(value),
+            fillOpacity: 1,
+            color: 'black',
+            opacity: 1,
+            weight: 1
+        };
+
     }
-    
+
     //what to do on highlight
-    function highlightGeo(e){
+    function highlightGeo(e) {
         var layer = e.target;
         layer.setStyle({
             fillOpacity: 0.5,
             weight: 3
         })
     };
-    
+
     //what to do on mouseout
-    function resetGeo(e){
+    function resetGeo(e) {
         geojson.resetStyle(e.target);
     };
-    
+
     function onEachFeature(feature, layer) {
         var tooltipContent = '';
-    
+
         // Check for and add the country name
         if (feature.properties && feature.properties['NAME_LONG']) {
             tooltipContent += '<strong>Country:</strong> ' + feature.properties['NAME_LONG'];
         }
-    
+
         // Add 'Oral, Head & Neck Surgeons per Capita' data or 'No data' if unavailable
         tooltipContent += '<br><strong>Oral, Head & Neck Surgeons per Capita:</strong> ';
-        tooltipContent += (feature.properties && feature.properties['Oral, Head & Neck Surgeons per Capita']) ? 
-                          feature.properties['Oral, Head & Neck Surgeons per Capita'] : 'No data';
-    
+        tooltipContent += (feature.properties && feature.properties['Oral, Head & Neck Surgeons per Capita']) ?
+            feature.properties['Oral, Head & Neck Surgeons per Capita'] : 'No data';
+
         // Add 'Oral, Head & Neck Surgeons' data or 'No data' if unavailable
         tooltipContent += '<br><strong>Oral, Head & Neck Surgeons:</strong> ';
-        tooltipContent += (feature.properties && feature.properties['Oral, Head, & Neck Surgeons']) ? 
-                          feature.properties['Oral, Head, & Neck Surgeons'] : 'No data';
-    
+        tooltipContent += (feature.properties && feature.properties['Oral, Head, & Neck Surgeons']) ?
+            feature.properties['Oral, Head, & Neck Surgeons'] : 'No data';
+
         // Bind the constructed tooltip content
         layer.bindTooltip(tooltipContent);
-    
+
         // Event handlers
         layer.on({
             mouseover: highlightGeo,
@@ -114,16 +253,16 @@
             // click: zoomToFeature
         });
     };
-    
-    
+
+
     const geojson = L.geoJSON(ohnsData, {
         style: styleGeo,
         onEachFeature: onEachFeature
-        }
+    }
     ).addTo(map);
-    
+
     var legend = L.control({ position: 'topright' });
-    
+
     legend.onAdd = function (map) {
         var div = L.DomUtil.create('div', 'info legend'),
             grades = [0, 11], // Start and end points of your domain
@@ -131,31 +270,31 @@
             n = 256, // Number of different colors to represent in the gradient
             gradientHTML = '',
             labelsHTML = '<div class="legend-labels">';
-    
+
         // Add labels
         for (var j = 0; j < labelPoints.length; j++) {
             labelsHTML += `<span style="left:${(labelPoints[j] / grades[1] * 100)}%">${labelPoints[j]}</span>`;
         }
         labelsHTML += '</div>';
-    
+
         // Create a gradient by iterating over a range of values
         for (var i = 0; i < n; i++) {
             var value = grades[0] + i * (grades[1] - grades[0]) / n;
             var color = colorScale(value);
             gradientHTML += `<i style="background-color:${color};"></i>`;
         }
-    
+
         // Add labels and gradient bar to the legend
         div.innerHTML = labelsHTML + '<div class="legend-gradient">' + gradientHTML + '</div>';
-    
+
         // Add caption
         div.innerHTML += '<div><strong>OHNS Density per 100,000 Population</strong><br></div>';
-    
+
         return div;
     };
-    
-    
+
+
     legend.addTo(map);
-    </script>
-    
+</script>
+
 {% endblock %}
