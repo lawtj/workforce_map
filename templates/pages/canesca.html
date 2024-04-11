@@ -5,18 +5,16 @@
 <!-- leaflet -->
 
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
-crossorigin=""/>
+    integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
-integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
-crossorigin=""></script>
+    integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
 
 <!-- geojson -->
 
 <script type="text/javascript" src="./static/geojson/can_states.geojson"></script>
 <script type="text/javascript" src="./static/geojson/can_country.geojson"></script>
-<script type = "text/javascript" src="./static/geojson/canesca.geojson"></script>
+<script type="text/javascript" src="./static/geojson/canesca.geojson"></script>
 
 <!-- d3 -->
 
@@ -39,16 +37,82 @@ crossorigin=""></script>
 
 {% include 'includes/hero_subpage.html' with context %}
 
-<div id="map" style="height: 600px;"></div>
+<div class="container px-4">
+    <div class="columns mt-6 mb-4 is-8">
+        <div class="content column is-two-thirds ">
+            <p class="title is-4 box has-background-success-soft has-text-success-bold"><span class='icon'><i
+                        class="fas fa-earth"></i></span>About this map:</p>
+            <p>This map was produced by the College of Anaesthesiologists of East, Central and Southern Africa
+                (CANECSA), in collaboration with the Royal College of Surgeons in Ireland, College of Surgeons of East,
+                Central and Southern Africa and the College of Anaesthesiologists of Ireland. This four-college
+                collaboration programme is funded by Irish Aid. Queen's University Belfast took a leading role in the
+                collection and collation of this dataset. The Anaesthesiology Association of Uganda, in conjunction with
+                the University of California San Francisco, independently collected the Ugandan workforce data. </p>
+            <p>This research was made possible by the support of numerous individuals and institutions in all eight
+                CANECSA Member Countries. We thank the national anaesthesia and anaesthesiology societies, national
+                medical councils, the Zambia College of Medicine and Surgery and the many hospitals, hospital groups and
+                NGOs who supported the data collection. We must particularly acknowledge Dr Juventine Asingei, Dr Mpoki
+                Ulisubisya, Prof Diarmuid O'Donovan, Ms Sophia Masuka, Dr Doreen Mashava, Mr Eric O'Flynn, Ms Faith
+                Akello and Ms Hailey Sledge for their tireless work.</p>
+
+        </div>
+        <div class="column">
+            <div class="dropdown is-hoverable">
+                <div class="dropdown-trigger">
+                    <button class="button">
+                        <span>View citation</span>
+
+                        <div class="block ml-3 mr-3">
+                            <span class="bulma-arrow-mixin"></span>
+                        </div>
+                    </button>
+                </div>
+
+                <div class="dropdown-menu">
+                    <div class="dropdown-content">
+                        <div class="dropdown-item is-italic has-text-weight-semibold">Davies JI, Vreede E, Onajin-Obembe
+                            B, Morriss WW (2018) <a href='https://gh.bmj.com/content/3/6/e001005' target="_blank">is the minimum number
+                            of specialist anaesthetists needed in low-income and middle-income countries? </a>
+                            Glob Heal 3:e001005. ps://doi.org/10.1136/bmjgh-2018-001005</div>
+                        <div class="dropdown-item is-italic has-text-weight-semibold">Asingei J, O'Flynn EP, O'Donovan
+                            DT, Masuka SC, Mashava D, Akello FV, Ulisubisya MM.
+                            <a href='https://pubmed.ncbi.nlm.nih.gov/35759411/' target="_blank">Specialist Anesthesiology Workforce in East, Central, and Southern Africa: A
+                            Cross-Sectional Study. Anesth Analg. </a> 2023 Feb 1;136(2):230-237. doi:
+                            10.1213/ANE.0000000000006134.
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
 
 
-<div class="container mt-6">
+    </div>
+</div>
+
+<section class="container my-6">
+    <div class="columns">
+        <div class="column is-two-thirds">
+            <div id="map" style="height: 600px;"></div>
+        </div>
+
+        <div class="column">
+            <div class="content">
+
+            </div>
+        </div>
+
+</section>
+
+
+
+<!-- <div class="container mt-6">
     <iframe
     src="https://workforce-embed.streamlit.app/CANESCA/?embed=true&embed_options=light_theme"
     style="width: 100%; height:75vh; border: none; display:block;"
     >
     </iframe>
-</div>
+</div> -->
 
 {% endblock %}
 
@@ -56,64 +120,62 @@ crossorigin=""></script>
 
 <script>
 
-var map = L.map('map').setView([-10, 30], 4);
+    var map = L.map('map').setView([-10, 30], 4);
 
-var tileLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    attribution: 'Map data © <a href="https://openstreetmap.org">OpenStreetMap</a> contributors',
-    opacity: 0.5
-}).addTo(map);
+    var tileLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: 'Map data © <a href="https://openstreetmap.org">OpenStreetMap</a> contributors',
+        opacity: 0.5
+    }).addTo(map);
 
-var countriesStyle = {
-    fillColor: 'green',
-    color: 'black',
-    weight: 2,
-    fillOpacity: 0.0,
-    dashArray: "5, 5"
-};
+    var countriesStyle = {
+        fillColor: 'green',
+        color: 'black',
+        weight: 2,
+        fillOpacity: 0.0,
+        dashArray: "5, 5"
+    };
 
-var countriesLayer = L.geoJSON(cancountry, { // Replace 'country' with your GeoJSON data
-    style: countriesStyle
-}).addTo(map);
+    var countriesLayer = L.geoJSON(cancountry, { // Replace 'country' with your GeoJSON data
+        style: countriesStyle
+    }).addTo(map);
 
-var boundariesStyle = {
-    fillColor: 'blue',
-    color: 'purple',
-    weight: 0,
-    fillOpacity: 0.05
-};
+    var boundariesStyle = {
+        fillColor: 'blue',
+        color: 'purple',
+        weight: 0,
+        fillOpacity: 0.05
+    };
 
-var boundariesLayer = L.geoJSON(canstates, { // Replace 'states' with your GeoJSON data
-    style: boundariesStyle,
-    onEachFeature: function(feature, layer) {
-        layer.bindTooltip("Country: " + feature.properties.admin + "<br>District: " + feature.properties.name);
-    }
-}).addTo(map);
+    var boundariesLayer = L.geoJSON(canstates, { // Replace 'states' with your GeoJSON data
+        style: boundariesStyle,
+        onEachFeature: function (feature, layer) {
+            var tooltipContent = '<strong>' + feature.properties.admin + '</strong>' +
+                '<br>' + feature.properties.name + ' district';
 
-var markerCluster = L.markerClusterGroup();
-console.log(canesca.features[0].properties['Latitude'])
-console.log(canesca.features[0].properties['Longitude'])
-console.log('adding goejson to map')
+            layer.bindTooltip(tooltipContent);
+        }
 
-const geojson = L.geoJSON(canesca, {
-    onEachFeature: function (feature, layer) {
-        console.log('hello')
-    // Assuming the feature has properties 'Latitude' and 'Longitude'
-    console.log(feature)
-    // var marker = L.marker([features.properties['Latitude'], features.properties['Longitude']]);
+    }).addTo(map);
 
-    // // Build the tooltip content using feature properties
-    // // Replace 'PRIMARY_ORGANISATION' and 'Number_of_Anaesthesiologists' with actual property names in your GeoJSON
-    // var tooltipContent = '<strong>' + feature.properties.PRIMARY_ORGANISATION + '</strong>: ' + 
-    //                         feature.properties.Number_of_Anaesthesiologists + ' anaesthesiologist(s)';
+    var markerCluster = L.markerClusterGroup();
 
-    // marker.bindTooltip(tooltipContent);
-    // markerCluster.addLayer(marker);
-    
-    }
-}).addTo(map);
+    const geojson = L.geoJSON(canesca, {
+        onEachFeature: function (feature, layer) {
+            // Assuming the feature has properties 'Latitude' and 'Longitude'
+            var marker = L.marker([feature.properties['Latitude'], feature.properties['Longitude']]);
 
-// Add the MarkerClusterGroup to the map
-map.addLayer(markerCluster);
+            // Build the tooltip content using feature properties
+            var tooltipContent = '<strong>' + feature.properties.PRIMARY_ORGANISATION + '</strong>: ' +
+                feature.properties.Number_of_Anaesthesiologists + ' anaesthesiologist(s)';
+
+            marker.bindTooltip(tooltipContent);
+            markerCluster.addLayer(marker);
+
+        }
+    })
+
+    // Add the MarkerClusterGroup to the map
+    map.addLayer(markerCluster);
 
 
 </script>
