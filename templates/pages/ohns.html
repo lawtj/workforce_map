@@ -47,7 +47,7 @@
 {% block map %}
 
 <div class="container">
-    <div class='container my-6' id="map" style="height:600px"></div>
+    <div class='container my-6' id="map" style="height:600px; background-color: #FFFFFF;"></div>
 </div>
 <section class="container my-6" x-data="tableHandler()">
     <div class="title" id="data-table">Data Table</div>
@@ -179,13 +179,21 @@
 <script>
     const map = L.map('map').setView([44.653024159812, 15.732421875000002], 2);
 
-    const tiles = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        maxZoom: 19,
-        attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-    }).addTo(map);
+    // const tiles = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    //     maxZoom: 19,
+    //     attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+    // }).addTo(map);
 
-    var colorScale = d3.scaleSequential(d3.interpolateBuGn)
-        .domain([0, 11]);
+
+
+    const myInterpolator = t => {
+    // This uses d3.interpolateRgb, which interpolates between two RGB colors
+    return d3.interpolateRgb('#C4e4db', '#547fa1')(t);  // Simple gradient from red to blue
+    }
+
+    var colorScale = d3.scaleSequential(myInterpolator)
+        .domain([0, 11]);        
+        
 
     //style function
     function styleGeo(geojson) {
