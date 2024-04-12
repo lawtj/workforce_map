@@ -3,7 +3,28 @@
 {% block head %}
     {{ super() }}
     <script type="text/javascript" src="./static/geojson/papgeo.geojson"></script>
-    <!-- <script type="text/javascript" src="./static/geojson/papgeo_datatable.json"></script> -->
+
+    <script type="module">
+        const config = {
+            searchColumn: 'NAME',
+            columns: {
+                'NAME': 'NAME',
+                'totalpap': 'totalpap',
+                'totalpap_cap': 'totalpap_cap',
+                'physicians2015': 'physicians2015',
+                'physicians2015_cap': 'physicians2015_cap',
+                'totalnpap': 'totalnpap',
+                'totalnpap_cap': 'totalnpap_cap',
+                'nurses2015': 'nurses2015',
+                'nurses2015_cap': 'nurses2015_cap'
+            }
+        };
+        import { createTableHandler } from './static/js/tableHandler.js';
+        const TableHandler = createTableHandler(papData.features, config);
+        window.TableHandler = TableHandler;
+
+    </script>
+
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.13.8/dist/cdn.min.js"></script>
 
 
@@ -109,7 +130,7 @@
     </div>
 </div>
 
-<section class="container my-6" x-data="tableHandler()">
+<section class="container my-6" x-data="TableHandler">
     <div class="title" id="data-table">Data Table</div>
     <div class="columns">
         <div class='column is-one-third'>
@@ -164,7 +185,7 @@
 {% endblock %}
 
 {% block scripts %}
-
+<!-- 
 <script>
 
     function tableHandler() {
@@ -257,7 +278,7 @@
         };
 
 
-</script>
+</script> -->
 
 
 <script>

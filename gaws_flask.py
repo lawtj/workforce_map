@@ -22,9 +22,9 @@ def CANESCA():
 def OHNS():
     return render_template("pages/ohns.html")
 
-@app.route("/folium")
+@app.route("/alpine")
 def folium():
-    return render_template("pages/ohns.html")
+    return render_template("pages/alpinetest.html")
 
 if __name__ == "__main__":
     app.run(debug=True)

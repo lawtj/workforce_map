@@ -5,7 +5,23 @@
 {{ super() }}
 
 <script type="text/javascript" src="./static/geojson/ohns_leaflet.geojson"></script>
-<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.13.8/dist/cdn.min.js"></script>
+<script type="module">
+    const config = {
+        searchColumn: 'NAME_LONG', // Example of a column used for searching
+        columns: {
+            NAME_LONG: 'NAME_LONG',
+            'Oral, Head & Neck Surgeons per Capita': 'Oral, Head & Neck Surgeons per Capita',
+            'Oral, Head, & Neck Surgeons': 'Oral, Head, & Neck Surgeons'
+        }
+    };
+    import { createTableHandler } from './static/js/tableHandler.js';
+    const TableHandler = createTableHandler(ohnsData.features, config);
+    window.TableHandler = TableHandler;
+
+</script>
+
+
+<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.13.8/dist/cdn.min.js" defer></script>
 
 
 {% endblock %}
@@ -49,7 +65,7 @@
 <div class="container">
     <div class='container my-6' id="map" style="height:600px; background-color: #FFFFFF;"></div>
 </div>
-<section class="container my-6" x-data="tableHandler()">
+<section class="container my-6" x-data="TableHandler">
     <div class="title" id="data-table">Data Table</div>
     <div class="columns">
         <div class='column is-one-third'>
@@ -91,9 +107,8 @@
 {% endblock %}
 
 {% block scripts %}
-
 <!-- data table script -->
-<script>
+<!-- <script>
     function tableHandler() {
         return {
                 search: "",
@@ -173,11 +188,11 @@
 
         }
     }
-    </script>
+    </script> -->
     
 
 <script>
-    const map = L.map('map').setView([44.653024159812, 15.732421875000002], 2);
+    const map = L.map('map').setView([34, 5], 2);
 
     // const tiles = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
     //     maxZoom: 19,
@@ -242,12 +257,12 @@
         }
 
         // Add 'Oral, Head & Neck Surgeons per Capita' data or 'No data' if unavailable
-        tooltipContent += '<br><strong>Oral, Head & Neck Surgeons per Capita:</strong> ';
+        tooltipContent += '<br><strong>Density of OHNS/ENT Providers per 100k Population:</strong> ';
         tooltipContent += (feature.properties && feature.properties['Oral, Head & Neck Surgeons per Capita']) ?
             feature.properties['Oral, Head & Neck Surgeons per Capita'] : 'No data';
 
         // Add 'Oral, Head & Neck Surgeons' data or 'No data' if unavailable
-        tooltipContent += '<br><strong>Oral, Head & Neck Surgeons:</strong> ';
+        tooltipContent += '<br><strong>Number of OHNS/ENT Providers:</strong> ';
         tooltipContent += (feature.properties && feature.properties['Oral, Head, & Neck Surgeons']) ?
             feature.properties['Oral, Head, & Neck Surgeons'] : 'No data';
 
@@ -296,7 +311,7 @@
         div.innerHTML = labelsHTML + '<div class="legend-gradient">' + gradientHTML + '</div>';
 
         // Add caption
-        div.innerHTML += '<div><strong>OHNS Density per 100,000 Population</strong><br></div>';
+        div.innerHTML += '<div><strong>OHNS/ENT Providers per 100,000 Population</strong><br></div>';
 
         return div;
     };

@@ -1,24 +1,32 @@
 
-export function createTableHandler(data, config) {
+export function createTableHandler(data, config, search) {
+        console.log('starting table handler')
         return {
-                search: "",
+                search: search || '',
+                searchColumn: config.searchColumn || null,
                 sortColumn: config.initialSortColumn || null,
                 sortAsc: true,
-                columns: {
-                    NAME_LONG: item.properties.NAME_LONG,
-                    'Oral, Head & Neck Surgeons per Capita': item.properties['Oral, Head & Neck Surgeons per Capita'],
-                    'Oral, Head, & Neck Surgeons': item.properties['Oral, Head, & Neck Surgeons']
-                },
-                data: data.features.map(item => {
-
-                    for (const key in item.properties) {
-                        if (item.properties[key] === 0 || item.properties[key] === 'No data') {
-                            item.properties[key] = null;
-                        }
-                    }
-                    return item;
+                // prepare the dataset
+                data: data.map(converted_dataset => {
+                    for (const key in converted_dataset.properties) {
+                        // Check if the value is 0 or 'No data' and convert it to null
+                        if (converted_dataset.properties[key] === 0 || converted_dataset.properties[key] === 'No data') {
+                            converted_dataset.properties[key] = null;
+                        } else if (parseFloat(converted_dataset.properties[key])) { 
+                            // Check if value can be parsed as a number. if it cannot, it is likely a country name, so skip it.
+                            // if it CAN be parsed, it is a number or NaN.
+                            // if the value is NaN, convert it to null
+                            if (isNaN(parseFloat(converted_dataset.properties[key]))) {
+                                converted_dataset.properties[key] = null;
+                            } else {
+                                // If the value is a number, convert it to a float. this prepares it for rounding and sorting.
+                                converted_dataset.properties[key] = parseFloat(converted_dataset.properties[key]);
+                            }
+                        } 
+                    } 
+                    return converted_dataset;
                 }),
-
+                
                 sortData() {
                     if (this.sortColumn !== null) {
                         this.data.sort((a, b) => {
@@ -41,13 +49,19 @@ export function createTableHandler(data, config) {
             filteredData() {
                 this.sortData(); // Call sort before filtering
 
-                return this.data.filter((item) => {
-                    return item.properties[config.search].toLowerCase().includes(this.search.toLowerCase());
-                }).map(item => {
-                    // Map each item to a new object based on config.columns
+                return this.data.filter((converted_dataset) => {
+                    try {
+                        return converted_dataset.properties[this.searchColumn].toLowerCase().includes(this.search.toLowerCase());
+                    } catch (error) {
+                        console.log('error on: ', converted_dataset.properties[this.searchColumn], 'with search: ', this.searchColumn)
+                        return false;
+                    }
+                }).map(converted_dataset => {
+                    // Map each converted_dataset to a new object based on config.columns
+                    // return an array where the key is the column name and the value is the property value
                     const mappedItem = {};
                     for (const key in config.columns) {
-                        mappedItem[key] = item.properties[config.columns[key]];
+                        mappedItem[key] = converted_dataset.properties[config.columns[key]]; // return the value of the property labeled by the column
                     }
                     return mappedItem;
                 });
@@ -84,3 +98,5 @@ export function createTableHandler(data, config) {
 
         }
     }
+
+window.createTableHandler = createTableHandler;
