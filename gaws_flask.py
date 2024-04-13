@@ -2,6 +2,15 @@ from flask import Flask, render_template
 
 app = Flask(__name__)
 
+
+iframe_routes = ['gaws_iframe', 'canesca_iframe', 'ohns_iframe']
+@app.route("/<iframe_name>")
+def render_iframe(iframe_name):
+    if iframe_name in iframe_routes:
+        return render_template(f"iframes/{iframe_name}.html")
+    else:
+        return "Invalid route", 404
+
 @app.route("/")
 def bulma():
     return render_template("bulma.html")

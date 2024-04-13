@@ -1,0 +1,39 @@
+{% extends 'layouts/iframe.html' %}
+
+{% block head %}
+
+    <!-- geojson -->
+
+<script type="text/javascript" src="./static/geojson/can_states.geojson"></script>
+<script type="text/javascript" src="./static/geojson/can_country.geojson"></script>
+<script type="text/javascript" src="./static/geojson/canesca.geojson"></script>
+
+
+<!-- marker cluster -->
+
+<link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.css" />
+<link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.Default.css" />
+<script src="https://unpkg.com/leaflet.markercluster/dist/leaflet.markercluster-src.js"></script>
+
+{% endblock %}
+
+{% block content %}
+
+<div class="container" id="map" style="height:600px"></div>
+
+{% endblock %}
+
+
+{% block scripts %}
+
+<script type="module">
+
+    import { createCANESCAmap } from "{{ url_for('static', filename='js/maps/canesca_map.js') }}";
+    // is this an iframe?
+    const map = createCANESCAmap(cancountry,canstates,canesca);
+
+    window.map = map;
+
+</script>
+    
+    {% endblock %}

@@ -85,16 +85,17 @@
             <thead>
                 <tr>
                     <th>Country <span class='icon' x-on:click="sort('NAME_LONG')"><i class="fa-solid fa-sort"></i></span></th>
-                    <th>OHNS per 100,000 Population <span class='icon' x-on:click="sort('Oral, Head & Neck Surgeons per Capita')"><i class="fa-solid fa-sort"></i></span></th>
-                    <th>OHNS Clinicians <span class='icon' x-on:click="sort('Oral, Head, & Neck Surgeons')"><i class="fa-solid fa-sort"></i></span></th>
+                    <th>Number of OHNS/ENT Providers <span class='icon' x-on:click="sort('Oral, Head, & Neck Surgeons')"><i class="fa-solid fa-sort"></i></span></th>
+                    <th>Density of OHNS/ENT Providers per 100,000 Population <span class='icon' x-on:click="sort('Oral, Head & Neck Surgeons per Capita')"><i class="fa-solid fa-sort"></i></span></th>
+
                 </tr>
             </thead>
             <tbody>
                 <template x-for="item in filteredData()" :key="item.NAME_LONG || 'default_' + index" >
                     <tr>
                         <td  x-text="item['NAME_LONG']"></td>
-                        <td x-text="item['Oral, Head & Neck Surgeons per Capita']"></td>
                         <td x-text="item['Oral, Head, & Neck Surgeons']"></td>
+                        <td x-text="item['Oral, Head & Neck Surgeons per Capita']"></td>
                     </tr>
                 </template>
             </tbody>
@@ -108,217 +109,12 @@
 {% endblock %}
 
 {% block scripts %}
-<!-- data table script -->
-<!-- <script>
-    function tableHandler() {
-        return {
-                search: "",
-                sortColumn: 'NAME_LONG',
-                sortAsc: true,
-                data: ohnsData.features.map(item => {
 
-                    for (const key in item.properties) {
-                        if (item.properties[key] === 0 || item.properties[key] === 'No data') {
-                            item.properties[key] = null;
-                        }
-                    }
-                    return item;
-                }),
-
-                sortData() {
-                    if (this.sortColumn !== null) {
-                        this.data.sort((a, b) => {
-                            // Handle null or undefined values
-                            if (a.properties[this.sortColumn] == null) return 1; // Push null or undefined to the end
-                            if (b.properties[this.sortColumn] == null) return -1;
-
-                            // Normal sorting
-                            if (a.properties[this.sortColumn] < b.properties[this.sortColumn]) {
-                                return this.sortAsc ? -1 : 1;
-                            }
-                            if (a.properties[this.sortColumn] > b.properties[this.sortColumn]) {
-                                return this.sortAsc ? 1 : -1;
-                            }
-                            return 0;
-                        });
-                    }
-                },
-    
-            filteredData() {
-                this.sortData(); // Call sort before filtering
-
-                return this.data.filter((item) => {
-                    return item.properties.NAME_LONG.toLowerCase().includes(this.search.toLowerCase());
-                }).map(item => {
-                    return {
-                        NAME_LONG: item.properties.NAME_LONG,
-                        'Oral, Head & Neck Surgeons per Capita': item.properties['Oral, Head & Neck Surgeons per Capita'],
-                        'Oral, Head, & Neck Surgeons': item.properties['Oral, Head, & Neck Surgeons']
-                    }
-                });
-            },
-
-            sort(column) {
-                if (this.sortColumn === column) {
-                    this.sortAsc = !this.sortAsc; // Toggle sort direction
-                } else {
-                    this.sortColumn = column;
-                    this.sortAsc = true; // Default to ascending when a new column is sorted
-                }
-            },
-            roundOrNot(value) {
-
-                if (value === 'No data' || value === 0 || value === null || isNaN(value)) {
-                    return null;
-                } else {
-                    var parsed = parseFloat(value);
-                    // Check if 'parsed' is a number and is not NaN
-                    return parsed.toFixed(2);
-                }
-            },
-
-            roundInt(value) {
-                if (value === 'No data' || value === 0 || value === null || isNaN(value)) {
-                    return null;
-                } else {
-                    var rounded = Math.round(value);
-                    // console.log(rounded)
-                    return rounded.toLocaleString()
-                }
-            },
-
-        }
-    }
-    </script> -->
-    
-
-<script>
-    const map = L.map('map').setView([34, 5], 2);
-
-    // const tiles = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    //     maxZoom: 19,
-    //     attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-    // }).addTo(map);
-
-
-
-    const myInterpolator = t => {
-    // This uses d3.interpolateRgb, which interpolates between two RGB colors
-    return d3.interpolateRgb('#C4e4db', '#547fa1')(t);  // Simple gradient from red to blue
-    }
-
-    var colorScale = d3.scaleSequential(myInterpolator)
-        .domain([0, 11]);        
-        
-
-    //style function
-    function styleGeo(geojson) {
-        var value = geojson.properties['Oral, Head & Neck Surgeons per Capita'];
-        // check if value is null or undefined
-        if (value === null || value === undefined) {
-            return {
-                fillColor: 'black',
-                fillOpacity: 0.1,
-                color: 'black',
-                opacity: 1,
-                weight: 1
-            };
-
-        }
-        return {
-            fillColor: colorScale(value),
-            fillOpacity: 1,
-            color: 'black',
-            opacity: 1,
-            weight: 1
-        };
-
-    }
-
-    //what to do on highlight
-    function highlightGeo(e) {
-        var layer = e.target;
-        layer.setStyle({
-            fillOpacity: 0.5,
-            weight: 3
-        })
-    };
-
-    //what to do on mouseout
-    function resetGeo(e) {
-        geojson.resetStyle(e.target);
-    };
-
-    function onEachFeature(feature, layer) {
-        var tooltipContent = '';
-
-        // Check for and add the country name
-        if (feature.properties && feature.properties['NAME_LONG']) {
-            tooltipContent += '<strong>Country:</strong> ' + feature.properties['NAME_LONG'];
-        }
-
-        // Add 'Oral, Head & Neck Surgeons per Capita' data or 'No data' if unavailable
-        tooltipContent += '<br><strong>Density of OHNS/ENT Providers per 100k Population:</strong> ';
-        tooltipContent += (feature.properties && feature.properties['Oral, Head & Neck Surgeons per Capita']) ?
-            feature.properties['Oral, Head & Neck Surgeons per Capita'] : 'No data';
-
-        // Add 'Oral, Head & Neck Surgeons' data or 'No data' if unavailable
-        tooltipContent += '<br><strong>Number of OHNS/ENT Providers:</strong> ';
-        tooltipContent += (feature.properties && feature.properties['Oral, Head, & Neck Surgeons']) ?
-            feature.properties['Oral, Head, & Neck Surgeons'] : 'No data';
-
-        // Bind the constructed tooltip content
-        layer.bindTooltip(tooltipContent);
-
-        // Event handlers
-        layer.on({
-            mouseover: highlightGeo,
-            mouseout: resetGeo,
-            // click: zoomToFeature
-        });
-    };
-
-
-    const geojson = L.geoJSON(ohnsData, {
-        style: styleGeo,
-        onEachFeature: onEachFeature
-    }
-    ).addTo(map);
-
-    var legend = L.control({ position: 'topright' });
-
-    legend.onAdd = function (map) {
-        var div = L.DomUtil.create('div', 'info legend'),
-            grades = [0, 11], // Start and end points of your domain
-            labelPoints = [0, 2, 4, 6, 7, 9, 11], // Points where labels will be added
-            n = 256, // Number of different colors to represent in the gradient
-            gradientHTML = '',
-            labelsHTML = '<div class="legend-labels">';
-
-        // Add labels
-        for (var j = 0; j < labelPoints.length; j++) {
-            labelsHTML += `<span style="left:${(labelPoints[j] / grades[1] * 100)}%">${labelPoints[j]}</span>`;
-        }
-        labelsHTML += '</div>';
-
-        // Create a gradient by iterating over a range of values
-        for (var i = 0; i < n; i++) {
-            var value = grades[0] + i * (grades[1] - grades[0]) / n;
-            var color = colorScale(value);
-            gradientHTML += `<i style="background-color:${color};"></i>`;
-        }
-
-        // Add labels and gradient bar to the legend
-        div.innerHTML = labelsHTML + '<div class="legend-gradient">' + gradientHTML + '</div>';
-
-        // Add caption
-        div.innerHTML += '<div><strong>OHNS/ENT Providers per 100,000 Population</strong><br></div>';
-
-        return div;
-    };
-
-
-    legend.addTo(map);
+<script type='module'>
+        import { createOHNSmap } from "{{ url_for('static', filename='js/maps/ohns_map.js') }}";
+        // is this an iframe?
+        const map = createOHNSmap(ohnsData, false);
+        window.map = map;
 </script>
 
 {% endblock %}
