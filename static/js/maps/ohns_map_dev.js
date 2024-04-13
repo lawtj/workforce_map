@@ -96,33 +96,36 @@ export function createOHNSmap(ohnsData, isiframe,colors,range_min,range_max){
     legend.onAdd = function (map) {
         var div = L.DomUtil.create('div', 'info legend'),
             grades = [range_min, range_max], // Start and end points of your domain
-            // labelPoints = [0, 2, 4, 6, 7, 9, 11], // Points where labels will be added
-            labelPoints = [range_min, range_max], // Points where labels will be added
             n = 256, // Number of different colors to represent in the gradient
             gradientHTML = '',
             labelsHTML = '<div class="legend-labels">';
-
-        // Add labels
-        for (var j = 0; j < labelPoints.length; j++) {
-            labelsHTML += `<span style="left:${(labelPoints[j] / grades[1] * 100)}%">${labelPoints[j]}</span>`;
-        }
-        labelsHTML += '</div>';
-
+    
         // Create a gradient by iterating over a range of values
         for (var i = 0; i < n; i++) {
-            var value = grades[0] + i * (grades[1] - grades[0]) / n;
+            var value = grades[0] + (i * (grades[1] - grades[0]) / n);
             var color = colorScale(value);
-            gradientHTML += `<i style="background-color:${color};"></i>`;
+            gradientHTML += `<i style="background-color:${color}; width: ${(1 / n) * 100}%;"></i>`;  // Ensure each segment of the gradient has equal width
         }
-
+    
+        // Define label points and add labels. You might want to add more label points based on your needs
+        var labelPoints = [range_min, range_max];
+        labelPoints.forEach((point, index) => {
+            // Calculate the position of the label based on its value
+            var position = ((point - grades[0]) / (grades[1] - grades[0])) * 100;
+            labelsHTML += `<span style="left:${position}%">${point}</span>`;
+        });
+    
+        labelsHTML += '</div>';
+    
         // Add labels and gradient bar to the legend
         div.innerHTML = labelsHTML + '<div class="legend-gradient">' + gradientHTML + '</div>';
-
+    
         // Add caption
         div.innerHTML += '<div><strong>OHNS/ENT Providers per 100,000 Population</strong><br></div>';
-
+    
         return div;
     };
+    
 
 
     legend.addTo(map);

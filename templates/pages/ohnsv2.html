@@ -120,13 +120,13 @@
                 </div>
                 <div class="field">
                     <div class="control">
-                        <input class="input" type="number" placeholder="Min" x-model="range_min" @change="updateMap">
+                        <input class="input" type="number" placeholder="Min" x-model.number="range_min" @change="updateMap">
                         <p class="help">Range min</p>
                     </div>
                 </div>
                 <div class="field">
                     <div class="control">
-                        <input class="input" type="number" placeholder="Max" x-model="range_max" @change="updateMap">
+                        <input class="input" type="number" placeholder="Max" x-model.number="range_max" @change="updateMap">
                         <p class="help">Range max</p>
                     </div>
                 </div>
