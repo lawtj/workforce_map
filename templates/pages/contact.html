@@ -15,7 +15,7 @@
     <!-- <div style="position: absolute; top: 0; left: 0; width: 70%; height: 100%"></div> -->
     <div class="container mx-auto is-relative">
         <div class="columns is-multiline is-vcentered">
-            <div class="column is-two-thirds px-3 mb-6">
+            <div class="column is-half px-3 mb-6">
                 <div class="column is-half is-offset-3">
                     <h1 class="title is-1 has-text-primary-soft-invert content has-text-centered">Contact Us</h1>
                     <p>Have a question about a map? Want to contribute your own data, or correct something out of date?
@@ -39,7 +39,8 @@
                 </div>
             </div>
             <div class="column my-6 px-3">
-                <div class="box has-text-centered has-background-light mx-auto">
+                <div class="column is-two-thirds is-offset-2">
+                <div class="box has-text-centered has-background-light mx-auto ">
                     <form action="{{ url_for('contact') }}" method="post">
                         {{ form.hidden_tag() }}
                         <h3 class="mb-5 is-size-4 has-text-weight-bold">Get in touch</h3>
@@ -89,6 +90,7 @@
                         </div>
                     </form>
                 </div>
+            </div> 
             </div>
         </div>
 
