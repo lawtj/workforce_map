@@ -9,4 +9,5 @@ gunicorn
 flask
 flask_wtf
 apprise
+email-validator
 # pycap
