@@ -2,7 +2,7 @@ from flask import Flask, render_template, redirect, url_for, flash
 from flask_wtf import FlaskForm
 from wtforms import StringField, TextAreaField, SelectField, SubmitField
 from wtforms.validators import DataRequired, Email
-from redcap import Project, RedcapError
+# from redcap import Project, RedcapError
 import os
 import apprise
 apobj = apprise.Apprise()
