@@ -7,5 +7,6 @@ streamlit_extras
 python-dotenv
 gunicorn
 flask
+flask_wtf
 apprise
-# redcap
+# pycap
