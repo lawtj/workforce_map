@@ -9,6 +9,11 @@ from flask import Flask
 from flask_talisman import Talisman 
 apobj = apprise.Apprise()
 
+import mimetypes
+
+mimetypes.add_type('text/css', '.css')
+mimetypes.add_type('application/javascript', '.js')
+
 # import dot env and load
 from dotenv import load_dotenv
 load_dotenv()
