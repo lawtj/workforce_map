@@ -1,9 +1,9 @@
 folium
-streamlit_folium
+# streamlit_folium
 pandas
 geopandas
 branca
-streamlit_extras
+# streamlit_extras
 python-dotenv
 gunicorn
 flask
