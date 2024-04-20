@@ -11,5 +11,5 @@ flask_wtf
 apprise
 email-validator
 flask_talisman
-mimetypes
+# mimetypes
 # pycap
