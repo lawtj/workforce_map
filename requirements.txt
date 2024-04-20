@@ -10,6 +10,6 @@ flask
 flask_wtf
 apprise
 email-validator
-flask_talisma
+flask_talisman
 mimetypes
 # pycap
