@@ -1,9 +1,15 @@
 <!DOCTYPE html>
 <html data-theme="light">
 <head>
-<link rel="icon" type="image/x-icon" href="/favicon.ico">
+ <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}">
 
-{% include 'includes/head.html' %}
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link
+rel="stylesheet" href="static/dist/css/my-bulma-project.css">
+
+<script src="https://kit.fontawesome.com/11e8878944.js" crossorigin="anonymous"></script>
+
 
 {% block head %}
 {% endblock %}

@@ -1,4 +1,5 @@
 export function createMap(papData,isiframe) {
+    var mapoption = 'pap';
     var southWest = L.latLng(-90, -180);
     var northEast = L.latLng(90, 180);
     var bounds = L.latLngBounds(southWest, northEast);
@@ -24,7 +25,11 @@ export function createMap(papData,isiframe) {
 
     //style function
     function styleGeo(geojson) {
-        var value = geojson.properties['totalpap_cap'];
+        if (mapoption === 'gaws'){
+            var value = geojson.properties['totalpap_cap'];
+        } else {
+            var value = geojson.properties['physicians2015_cap'];
+        }
         // check if value is null or undefined
         if (value === null || value === undefined || value === "No data") {
             return {
@@ -172,6 +177,12 @@ export function createMap(papData,isiframe) {
 
 
     const geojson = L.geoJSON(papData, {
+        style: styleGeo,
+        onEachFeature: onEachFeature
+    }
+    ).addTo(map);
+
+    const gaws2015 = L.geoJSON(papData, {
         style: styleGeo,
         onEachFeature: onEachFeature
     }

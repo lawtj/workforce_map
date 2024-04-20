@@ -5,6 +5,8 @@ from wtforms.validators import DataRequired, Email
 # from redcap import Project, RedcapError
 import os
 import apprise
+from flask import Flask
+from flask_talisman import Talisman 
 apobj = apprise.Apprise()
 
 # import dot env and load
@@ -106,6 +108,9 @@ def contact():
 
         return redirect(url_for('contact'))
     return render_template('pages/contact.html', form=form)
+
+
+Talisman(app, content_security_policy=None)
 
 if __name__ == "__main__":
     app.run(debug=True)

@@ -48,67 +48,64 @@
 
 
     .leaflet-container :focus:not(:focus-visible) {
-  outline: 0;
-}
+        outline: 0;
+    }
 </style>
 
 {% endblock %}
 
 {% block content %}
 
-    {% include 'includes/hero_subpage.html' %}
+{% include 'includes/hero_subpage.html' %}
 
-    <div class="container px-4">
-        <div class="columns mt-6 mb-4 is-8">
-            <div class="content column is-two-thirds">
-                <div class="box has-background-success-soft is-flex is-align-items-center is-justify-content-space-between">
-                    <div class="is-flex is-align-items-center">
-                        <span class='icon' style="margin-right: 15px;"><i class="fas fa-2x fa-earth"></i></span>
-                        <span class="title is-4 has-text-success-bold">About this map:</span>
-                    </div>
-                    <div class="">
-                        <div class="dropdown is-hoverable is-right">
-                            <div class="dropdown-trigger">
-                                <div class="button ">
-                                    <span>View citation</span>
+<div class="container px-4">
+    <div class="columns mt-6 mb-4 is-8">
+        <div class="content column is-two-thirds">
+            <div class="box has-background-success-soft is-flex is-align-items-center is-justify-content-space-between">
+                <div class="is-flex is-align-items-center">
+                    <span class='icon' style="margin-right: 15px;"><i class="fas fa-2x fa-earth"></i></span>
+                    <span class="title is-4 has-text-success-bold">About this map:</span>
+                </div>
+                <div class="">
+                    <div class="dropdown is-hoverable is-right">
+                        <div class="dropdown-trigger">
+                            <div class="button ">
+                                <span>View citation</span>
 
-                                    <div class="block ml-3 mr-3">
-                                        <span class="bulma-arrow-mixin"></span>
-                                    </div>
+                                <div class="block ml-3 mr-3">
+                                    <span class="bulma-arrow-mixin"></span>
                                 </div>
                             </div>
+                        </div>
 
-                            <div class="dropdown-menu">
-                                <div class="dropdown-content">
-                                    {% block citation %}
+                        <div class="dropdown-menu">
+                            <div class="dropdown-content">
+                                {% block citation %}
 
-                                    {% endblock %}
-                                </div>
+                                {% endblock %}
                             </div>
                         </div>
                     </div>
                 </div>
-
-                {% block about_content %}
-                {% endblock %}
-
-
-
             </div>
-            <div class="column">
-                {% block about_content_right %}
+            {% block about_content %}
+            {% endblock %}
+        </div>
 
-                {% endblock %}
+        <div class="column">
+            {% block about_content_right %}
 
-            </div>
-
+            {% endblock %}
 
         </div>
+
+
     </div>
+</div>
 
-        {% block map %}
+{% block map %}
 
-        {% endblock %}
+{% endblock %}
 
 {% endblock %}
 
