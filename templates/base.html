@@ -1,28 +1,61 @@
 <!DOCTYPE html>
 <html data-theme="light">
+
 <head>
- <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}">
+  <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}">
 
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<link
-rel="stylesheet" href="static/dist/css/my-bulma-project.css">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="static/dist/css/my-bulma-project.css">
 
-<script src="https://kit.fontawesome.com/11e8878944.js" crossorigin="anonymous"></script>
+  <script src="https://kit.fontawesome.com/11e8878944.js" crossorigin="anonymous"></script>
+
+  <style>
+
+.footer-logo {
+  max-height: 100px;  /* Control the maximum height common to both */
+  max-width: 100%;  /* Ensure the width does not exceed the container size */
+  width: auto;  /* Maintain the aspect ratio */
+  height: auto;  /* Adjust the height automatically */
+}
 
 
-{% block head %}
-{% endblock %}
+  </style>
+
+  {% block head %}
+  {% endblock %}
 
 </head>
 
 <title>{% block title %}Home{% endblock %}</title>
 
 <body class="has-navbar-fixed-top">
-    {% include 'includes/nav.html' %}
+  {% include 'includes/nav.html' %}
 
-    {% block content %}
-    {% endblock %}
+  {% block content %}
+  {% endblock %}
+
+  {% block footer %}
+
+  <footer class="footer has-background-white-ter">
+    <div class="level">
+      <div class="level-item">
+        <img src="static/images/logo-chesa.png" alt="Chesa Logo" class="footer-logo">
+      </div>
+      <div class="level-item">
+        <img src="static/images/logo-ohns_alpha.png" alt="Global OHNS" class="footer-logo">
+      </div>
+      <div class="level-item">
+        <img src="static/images/wfsa_logo_alpha.png" alt="WFSA" class="footer-logo">
+      </div>
+      <div class="level-item">
+        <img src="static/images/logo_rcsi.png" alt="RCSI" class="footer-logo">
+      </div>
+    </div>
+  </footer>
+  
+
+  {% endblock %}
 
 </body>
 
@@ -30,27 +63,27 @@ rel="stylesheet" href="static/dist/css/my-bulma-project.css">
 {% endblock %}
 
 <script>
-    document.addEventListener('DOMContentLoaded', () => {
+  document.addEventListener('DOMContentLoaded', () => {
 
-// Get all "navbar-burger" elements
-const $navbarBurgers = Array.prototype.slice.call(document.querySelectorAll('.navbar-burger'), 0);
+    // Get all "navbar-burger" elements
+    const $navbarBurgers = Array.prototype.slice.call(document.querySelectorAll('.navbar-burger'), 0);
 
-// Add a click event on each of them
-$navbarBurgers.forEach( el => {
-  el.addEventListener('click', () => {
+    // Add a click event on each of them
+    $navbarBurgers.forEach(el => {
+      el.addEventListener('click', () => {
 
-    // Get the target from the "data-target" attribute
-    const target = el.dataset.target;
-    const $target = document.getElementById(target);
+        // Get the target from the "data-target" attribute
+        const target = el.dataset.target;
+        const $target = document.getElementById(target);
 
-    // Toggle the "is-active" class on both the "navbar-burger" and the "navbar-menu"
-    el.classList.toggle('is-active');
-    $target.classList.toggle('is-active');
+        // Toggle the "is-active" class on both the "navbar-burger" and the "navbar-menu"
+        el.classList.toggle('is-active');
+        $target.classList.toggle('is-active');
+
+      });
+    });
 
   });
-});
-
-});
 </script>
 
 

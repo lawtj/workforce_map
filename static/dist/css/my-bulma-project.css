@@ -12615,7 +12615,7 @@ label.panel-block:hover {
 .footer {
   --bulma-footer-background-color: var(--bulma-scheme-main-bis);
   --bulma-footer-color: false;
-  --bulma-footer-padding: 3rem 1.5rem 6rem;
+  --bulma-footer-padding: 1.5rem 1.5rem 1.5rem;
   background-color: var(--bulma-footer-background-color);
   padding: var(--bulma-footer-padding);
 }
