@@ -188,12 +188,25 @@
 
 {% block scripts %}
 
-<script type="module">
-    import  { createMap } from './static/js/maps/gaws_map.js';
+<!-- Remove this line
+<script type="text/javascript" src="{{ url_for('static', filename='geojson/papgeo.js') }}"></script>
+-->
 
-    const map = createMap(papData, false);
-    window.map = map;
+<script type="module">
+    import { createMap } from './static/js/maps/gaws_map.js';
+
+    // Fetch the geoJSON data
+    fetch('{{ url_for("static", filename="geojson/papgeo.geojson") }}')
+        .then(response => response.json())
+        .then(papData => {
+            const map = createMap(papData, false);
+            window.map = map;
+        })
+        .catch(error => console.error('Error loading the geoJSON data:', error));
 
 </script>
+
+<!-- <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.13.8/dist/cdn.min.js"></script> -->
+
 
 {% endblock %}
