@@ -1,0 +1,57 @@
+{% extends 'layouts/iframe.html' %}
+
+{% block head %}
+    
+    <script type="text/javascript" src="./static/geojson/ohns_leaflet.geojson"></script>
+    <style>
+    .info.legend {
+        background: white;
+        background: rgba(255, 255, 255, 0.9);
+        box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+        border-radius: 5px;
+        padding: 5px 10px;
+        line-height: 18px;
+        color: #555;
+    }
+
+    .legend-gradient {
+        display: flex;
+        height: 10px;
+        margin-bottom: 5px;
+    }
+
+    .legend-gradient i {
+        flex-grow: 1;
+        height: 100%;
+    }
+
+    .legend-labels {
+        display: flex;
+        justify-content: space-between;
+    }
+
+
+    .leaflet-container :focus:not(:focus-visible) {
+  outline: 0;
+}
+    </style>
+
+{% endblock %}
+
+{% block content %}
+
+<div class="container" id="map" style="height:600px"></div>
+
+{% endblock %}
+
+{% block scripts %}
+    <script type="module">
+        import  { createOHNSmap } from "{{ url_for('static', filename='js/maps/ohns_map.js') }}";
+
+        // is this an iframe?
+        const map = createOHNSmap(ohnsData, true);
+        window.map = map;
+
+    </script>
+
+{% endblock %}

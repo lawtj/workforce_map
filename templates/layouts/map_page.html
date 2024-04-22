@@ -1,0 +1,116 @@
+{% extends 'base.html' %}
+
+
+{% block head %}
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+    integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+
+
+<script src="https://d3js.org/d3.v6.min.js"></script>
+
+
+
+<style>
+    #map {
+        height: 400px
+    }
+</style>
+
+<style>
+    .info.legend {
+        background: white;
+        background: rgba(255, 255, 255, 0.9);
+        box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+        border-radius: 5px;
+        padding: 5px 10px;
+        line-height: 18px;
+        color: #555;
+    }
+
+    .legend-gradient {
+        display: flex;
+        height: 10px;
+        margin-bottom: 5px;
+    }
+
+    .legend-gradient i {
+        flex-grow: 1;
+        height: 100%;
+    }
+
+    .legend-labels {
+        display: flex;
+        justify-content: space-between;
+    }
+
+
+    .leaflet-container :focus:not(:focus-visible) {
+        outline: 0;
+    }
+</style>
+
+{% endblock %}
+
+{% block content %}
+
+{% include 'includes/hero_subpage.html' %}
+
+<div class="container px-4">
+    <div class="columns mt-6 mb-4 is-8">
+        <div class="content column is-two-thirds">
+            <div class="box has-background-success-soft is-flex is-align-items-center is-justify-content-space-between">
+                <div class="is-flex is-align-items-center">
+                    <span class='icon' style="margin-right: 15px;"><i class="fas fa-2x fa-earth"></i></span>
+                    <span class="title is-4 has-text-success-bold">About this map:</span>
+                </div>
+                <div class="">
+                    <div class="dropdown is-hoverable is-right">
+                        <div class="dropdown-trigger">
+                            <div class="button ">
+                                <span>View citation</span>
+
+                                <div class="block ml-3 mr-3">
+                                    <span class="bulma-arrow-mixin"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="dropdown-menu">
+                            <div class="dropdown-content">
+                                {% block citation %}
+
+                                {% endblock %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% block about_content %}
+            {% endblock %}
+        </div>
+
+        <div class="column">
+            {% block about_content_right %}
+
+            {% endblock %}
+
+        </div>
+
+
+    </div>
+</div>
+
+{% block map %}
+
+{% endblock %}
+
+{% endblock %}
+
+
+{% block scripts %}
+
+
+{% endblock %}

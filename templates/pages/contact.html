@@ -1,0 +1,106 @@
+{% extends 'base.html' %}
+
+{% block head %}
+<title>Contact Us</title>
+{% endblock %}
+
+{% block content %}
+
+{% set hero_text = "Contact" %}
+{% set hero_subtitle = "" %}
+{% include 'includes/hero_subpage.html' %}
+
+<div class="container my-6 is-relative">
+
+    <!-- <div style="position: absolute; top: 0; left: 0; width: 70%; height: 100%"></div> -->
+    <div class="container mx-auto is-relative">
+        <div class="columns is-multiline is-vcentered">
+            <div class="column is-half px-3 mb-6">
+                <div class="column is-half is-offset-3">
+                    <h1 class="title is-1 has-text-primary-soft-invert content has-text-centered">Contact Us</h1>
+                    <p>Have a question about a map? Want to contribute your own data, or correct something out of date?
+                    </p>
+                    <br>
+                    <p><span class="has-text-link has-text-weight-bold">Don't hesitate to get in touch. </span>Fill out
+                        the form on the right, and we'll get right
+                        back to you.
+                        <span class="icon"><i class="fa-solid fa-envelope"></i></span>
+                    </p>
+                    <br>
+                    {% with messages = get_flashed_messages(with_categories=true) %}
+                    {% if messages %}
+                    {% for category, message in messages %}
+                    <div class="notification is-{{ category }}">
+                        {{ message }}
+                    </div>
+                    {% endfor %}
+                    {% endif %}
+                    {% endwith %}
+                </div>
+            </div>
+            <div class="column my-6 px-3">
+                <div class="column is-two-thirds is-offset-2">
+                <div class="box has-text-centered has-background-light mx-auto ">
+                    <form action="{{ url_for('contact') }}" method="post">
+                        {{ form.hidden_tag() }}
+                        <h3 class="mb-5 is-size-4 has-text-weight-bold">Get in touch</h3>
+                        <div class="field">
+                            {{ form.name.label(class="label") }}
+
+                            <div class="control">
+                                {{ form.name(class="input", placeholder="Your Name") }}
+                                {% if form.name.errors %}
+                                <p class="help is-danger">{{ form.name.errors[0] }}</p>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="field">
+                            {{ form.email.label(class="label") }}
+
+                            <div class="control">
+                                {{ form.email(class="input", type='email', placeholder="Your Email Address") }}
+                                {% if form.email.errors %}
+                                <p class="help is-danger">{{ form.email.errors[0] }}</p>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="field">
+                            <div class="control">
+                                <div class="select">
+                                    {{ form.inquiry_type(class="select is-fullwidth", id="inquiry_type") }}
+                                    {% if form.inquiry_type.errors %}
+                                    <p class="help is-danger">{{ form.inquiry_type.errors[0] }}</p>
+                                    {% endif %}
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="field">
+                            {{ form.message.label(class="label") }}
+
+                            <div class="control">
+                                {{ form.message(class="textarea", placeholder="Your Message") }}
+                                {% if form.message.errors %}
+                                <p class="help is-danger">{{ form.message.errors[0] }}</p>
+                                {% endif %}
+                            </div>
+                            <div class="field my-4">
+                                {{ form.submit(class="button is-primary is-fullwidth") }}
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div> 
+            </div>
+        </div>
+
+    </div>
+</div>
+
+
+
+{% endblock %}
+
+{% block scripts %}
+
+{% endblock %}

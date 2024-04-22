@@ -1,0 +1,199 @@
+{% extends "layouts/map_page.html" %}
+
+{% block head %}
+    {{ super() }}
+
+    <script type="text/javascript" src="{{ url_for('static', filename='geojson/papgeo.js') }}"></script>
+
+    <script type="module">
+        const config = {
+            searchColumn: 'NAME',
+            initialSortColumn:'NAME',
+            columns: {
+                'NAME': 'NAME',
+                'totalpap': 'totalpap',
+                'totalpap_cap': 'totalpap_cap',
+                'physicians2015': 'physicians2015',
+                'physicians2015_cap': 'physicians2015_cap',
+                'totalnpap': 'totalnpap',
+                'totalnpap_cap': 'totalnpap_cap',
+                'nurses2015': 'nurses2015',
+                'nurses2015_cap': 'nurses2015_cap'
+            }
+        };
+        import { createTableHandler } from './static/js/tableHandler.js';
+        const TableHandler = createTableHandler(papData.features, config);
+        window.TableHandler = TableHandler;
+
+    </script>
+
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.13.8/dist/cdn.min.js"></script>
+
+
+{% endblock %}
+
+{% block title %}Global Anesthesia Workforce{% endblock %}
+
+{% set hero_text = "Global Anesthesia Workforce" %}
+{% set hero_subtitle = "Number of Physician Anesthesia Providers (PAPs) per 100,000 population" %}
+
+
+
+{% block about_content %}
+
+<p>This map shows three layers of anesthesia workforce data.
+<ul>
+    <li>Number of Physician Anesthesia Providers (PAPs) per 100,000 population</li>
+    <li>Number of Non-Physician Anesthesia Providers (NPAPs) per 100,000 population</li>
+    <li>Number of Physician Anesthesia Providers (PAPs) per 100,000 population in 2016 (per the previous WFSA Workforce
+        Survey)</li>
+
+</ul>
+</p>
+<p>In 2016, the World Federation of Societies of Anaesthesiologists performed the first survey of the global anesthesia
+    workforce. Data is derived from the Global Anesthesia Workforce Survey published in 2024.</p>
+
+<p class="has-text-weight-bold"><a href='#data-table'>View the data table. <span class='icon'><i class="fa-solid fa-turn-down"></i></span></a></p>
+
+{% endblock %}
+
+{% block citation %}
+<div class="dropdown-item">
+    <p class="is-italic has-text-weight-semibold">Law, Tyler J., Michael S. Lipnick,
+        Wayne
+        Morriss, Adrian W. Gelb, et al. 2024. <a
+            href='https://journals.lww.com/anesthesia-analgesia/fulltext/9900/the_global_anesthesia_workforce_survey__updates.788.aspx'
+            target="_blank">“The Global Anesthesia Workforce Survey: Updates and Trends
+            in the
+            Anesthesia Workforce.” </a>Anesthesia & Analgesia, March,
+        10.1213/ANE.0000000000006836.</p>
+</div>
+{% endblock %}
+
+{% block map %}
+<div class="container px-4">
+    <div class="columns">
+        <div class="container column is-three-quarters" id="map" style="height:600px; background-color: #FFFFFF;" ></div>
+        <div class="container column">
+            <div class="card">
+                <div class="card-header " id="card-header">
+                    <div class="card-header-title is-flex is-flex-direction-column " id="card-header-title">
+                        <p id="country-name">Select a country to view details</p>
+                        <p class="is-size-6" id="country-population"></p>
+                    </div>
+                </div>
+                <div class="card-content" id="country-details" style="display: none;">
+                    <!-- Table for displaying country details -->
+                    <p class="has-text-weight-semibold has-background-light">Physician Data</p>
+                    <table class="table is-fullwidth is-narrow is-hoverable">
+                        <tbody>
+                            <tr>
+                                <td><strong>Total PAPs</strong></td>
+                                <td id="country-totalpap"></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Total PAP Density</strong></td>
+                                <td id="country-totalpap_cap"></td>
+                            </tr>
+                            <tr>
+                                <td><strong>PAPs in 2016</strong></td>
+                                <td id="country-PAP2015"></td>
+                            </tr>
+                            <tr>
+                                <td><strong>PAP Density in 2016</strong></td>
+                                <td id="country-pap_density_2015"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <p class="has-text-weight-semibold has-background-light">Non-Physician Data</p>
+                    <table class="table is-fullwidth is-narrow is-hoverable">
+                        <tbody>
+                            <tr>
+                                <td><strong>Total NPAPs</strong></td>
+                                <td id="country-totalnpap"></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Total NPAP Density</strong></td>
+                                <td id="country-totalnpap_cap"></td>
+                            </tr>
+                            <tr>
+                                <td><strong>NPAPs in 2016</strong></td>
+                                <td id="country-NPAP2015"></td>
+                            </tr>
+                            <tr>
+                                <td><strong>NPAP Density in 2016</strong></td>
+                                <td id="country-npap_density_2015"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<section class="container my-6" x-data="TableHandler">
+    <div class="title" id="data-table">Data Table</div>
+    <div class="columns">
+        <div class='column is-one-third'>
+            <div class="field">
+                <div class="control">
+                    <input class="input is-rounded is-focused" type="text" placeholder="Search" x-model="search">
+                </div>
+            </div>
+        </div>
+        <div class="column">
+
+        </div>
+    </div>
+    <div class="container" style="max-height: 500px; overflow-y: auto; min-height: 500px">
+        <table class="table is-striped is-hoverable" >
+            <thead>
+                <tr>
+
+                    <th>Country <span class='icon' x-on:click="sort('NAME')"><i class="fa-solid fa-sort"></i></span></th>
+                    <th>Total PAPs <span class='icon' x-on:click="sort('totalpap')"><i class="fa-solid fa-sort"></i></span></th>
+                    <th>Total PAP Density <span class='icon' x-on:click="sort('totalpap_cap')"><i class="fa-solid fa-sort"></i></span></th>
+                    <th>PAPs in 2016 <span class='icon' x-on:click="sort('physicians2015')"><i class="fa-solid fa-sort"></i></span></th>
+                    <th>PAP Density in 2016 <span class='icon' x-on:click="sort('physicians2015_cap')"><i class="fa-solid fa-sort"></i></span></th>
+                    <th>Total NPAPs <span class='icon' x-on:click="sort('totalnpap')"><i class="fa-solid fa-sort"></i></span></th>
+                    <th>Total NPAP Density <span class='icon' x-on:click="sort('totalnpap_cap')"><i class="fa-solid fa-sort"></i></span></th>
+                    <th>NPAPs in 2016 <span class='icon' x-on:click="sort('nurses2015')"><i class="fa-solid fa-sort"></i></span></th>
+                    <th>NPAP Density in 2016 <span class='icon' x-on:click="sort('nurses2015_cap')"><i class="fa-solid fa-sort"></i></span></th>
+            
+                <tr>
+            </thead>
+            <tbody>
+                <template x-for="row in filteredData()" :key="row.NAME || 'default_'+ index">
+                    <tr>
+                        <td x-text="row.NAME "></td>
+                        <td x-text="roundInt(row.totalpap)"></td>
+
+                        <td x-text="roundOrNot(row.totalpap_cap)"></td>
+
+                        <td x-text="roundInt(row.physicians2015)"></td>
+                        <td x-text="roundOrNot(row.physicians2015_cap)"></td>
+                        <td x-text="roundInt(row.totalnpap)"></td>
+                        <td x-text="roundOrNot(row.totalnpap_cap)"></td>
+                        <td x-text="roundInt(row.nurses2015)"></td>
+                        <td x-text="roundOrNot(row.nurses2015_cap)"></td>
+                    </tr>
+                </template>
+            </tbody>
+        </table>
+    </div>
+
+</section>
+{% endblock %}
+
+{% block scripts %}
+
+<script type="module">
+    import  { createMap } from './static/js/maps/gaws_map.js';
+
+    const map = createMap(papData, false);
+    window.map = map;
+
+</script>
+
+{% endblock %}

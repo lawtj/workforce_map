@@ -78,7 +78,6 @@ def createmap(gdf):
     search_label="NAME",
     weight=3,
 ).add_to(m)
-          
     return m
 
 def createmap2016(gdf):

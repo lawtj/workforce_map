@@ -1,0 +1,83 @@
+{% extends "layouts/map_page.html" %}
+
+{% block head %}
+
+{{ super() }}
+<!-- geojson -->
+
+<script type="text/javascript" src="./static/geojson/can_states.js"></script>
+<script type="text/javascript" src="./static/geojson/can_country.js"></script>
+<script type="text/javascript" src="./static/geojson/canesca.js"></script>
+
+
+<!-- marker cluster -->
+
+<link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.css" />
+<link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.Default.css" />
+<script src="https://unpkg.com/leaflet.markercluster/dist/leaflet.markercluster-src.js"></script>
+
+
+{% endblock %}
+
+{% block title %}CANESCA{% endblock %}
+
+{% set hero_text = "Anesthesiologists in East, Central and Southern Africa" %}
+{% set hero_subtitle = "Point locations and hospital of practicing anesthesiologists" %}
+
+
+{% block about_content %}
+<p>This map was produced by the College of Anaesthesiologists of East, Central and Southern Africa (CANECSA), in collaboration with the Royal College of Surgeons in Ireland, College of Surgeons of East,
+    Central and Southern Africa and the College of Anaesthesiologists of Ireland. This four-college
+    collaboration programme is funded by Irish Aid. Queen's University Belfast took a leading role in the
+    collection and collation of this dataset. The Anaesthesiology Association of Uganda, in conjunction with
+    the University of California San Francisco, independently collected the Ugandan workforce data. </p>
+<p>This research was made possible by the support of numerous individuals and institutions in all eight
+    CANECSA Member Countries. We thank the national anaesthesia and anaesthesiology societies, national
+    medical councils, the Zambia College of Medicine and Surgery and the many hospitals, hospital groups and
+    NGOs who supported the data collection. We must particularly acknowledge Dr Juventine Asingei, Dr Mpoki
+    Ulisubisya, Prof Diarmuid O'Donovan, Ms Sophia Masuka, Dr Doreen Mashava, Mr Eric O'Flynn, Ms Faith
+    Akello and Ms Hailey Sledge for their tireless work.</p>
+{% endblock %}
+
+{% block citation %}
+<div class="dropdown-item">
+    <p class='is-italic has-text-weight-semibold'>Davies JI, Vreede E, Onajin-Obembe
+        B, Morriss WW (2018) <a href='https://gh.bmj.com/content/3/6/e001005' target="_blank">is the minimum number
+            of specialist anaesthetists needed in low-income and middle-income countries? </a>
+        Glob Heal 3:e001005. ps://doi.org/10.1136/bmjgh-2018-001005</p>
+</div>
+<div class="dropdown-item">
+    <p class='is-italic has-text-weight-semibold'>Asingei J, O'Flynn EP, O'Donovan
+        DT, Masuka SC, Mashava D, Akello FV, Ulisubisya MM.
+        <a href='https://pubmed.ncbi.nlm.nih.gov/35759411/' target="_blank">Specialist Anesthesiology Workforce in East,
+            Central, and Southern Africa: A
+            Cross-Sectional Study. Anesth Analg. </a> 2023 Feb 1;136(2):230-237. doi:
+        10.1213/ANE.0000000000006134.
+    </p>
+
+</div>
+{% endblock %}
+
+{% block map %}
+<section class="container my-6">
+        <div class="column is-two-thirds">
+            <div id="map" style="height: 600px;"></div>
+        </div>
+
+</section>
+
+
+{% endblock %}
+
+{% block scripts %}
+
+<script type="module">
+
+    import { createCANESCAmap } from "{{ url_for('static', filename='js/maps/canesca_map.js') }}";
+
+    const map = createCANESCAmap(cancountry, canstates, canesca);
+    window.map = map;
+
+</script>
+
+{% endblock %}

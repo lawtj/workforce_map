@@ -1,0 +1,214 @@
+{% extends 'layouts/map_page.html' %}
+
+{% block head %}
+
+{{ super() }}
+
+<script type="text/javascript" src="./static/geojson/ohns_leaflet.geojson"></script>
+<script type="module">
+    const config = {
+        searchColumn: 'NAME_LONG', // Example of a column used for searching
+        initialSortColumn: 'NAME_LONG',
+        columns: {
+            NAME_LONG: 'NAME_LONG',
+            'Oral, Head & Neck Surgeons per Capita': 'Oral, Head & Neck Surgeons per Capita',
+            'Oral, Head, & Neck Surgeons': 'Oral, Head, & Neck Surgeons'
+        },
+    };
+    import { createTableHandler } from './static/js/tableHandler.js';
+    const TableHandler = createTableHandler(ohnsData.features, config);
+    window.TableHandler = TableHandler;
+
+</script>
+
+<script type="module">
+    import { createOHNSmap } from "{{ url_for('static', filename='js/maps/ohns_map_dev.js') }}";
+
+    document.addEventListener('alpine:init', () => {
+        Alpine.data('mapController', () => ({
+            selectedColorScale: 'Blues',
+            range_min: 0,
+            range_max: 11,
+            map: null,
+
+            init() {
+                // Initial map creation
+                this.map = createOHNSmap(ohnsData, false, this.getColorScale(this.selectedColorScale), this.range_min, this.range_max);
+            },
+
+            updateMap() {
+                // Update the map whenever the dropdown changes
+                if (this.map) {
+                    this.map.remove(); // Remove the existing map instance
+                }
+                this.map = createOHNSmap(ohnsData, false, this.getColorScale(this.selectedColorScale), this.range_min, this.range_max);
+            },
+
+            getColorScale(scaleName) {
+                // Define different color scales
+                const scales = {
+                    "Blues": d3.interpolateBlues,
+                    "Greens": d3.interpolateGreens,
+                    "Greys": d3.interpolateGreys,
+                    "Oranges": d3.interpolateOranges,
+                    "Purples": d3.interpolatePurples,
+                    "Reds": d3.interpolateReds,
+                    "Blue to Green (BuGn)": d3.interpolateBuGn,
+                    "Blue to Purple (BuPu)": d3.interpolateBuPu,
+                    "Green to Blue (GnBu)": d3.interpolateGnBu,
+                    "Orange to Red (OrRd)": d3.interpolateOrRd,
+                    "Purple to Blue to Green (PuBuGn)": d3.interpolatePuBuGn,
+                    "Purple to Blue (PuBu)": d3.interpolatePuBu,
+                    "Purple to Red (PuRd)": d3.interpolatePuRd,
+                    "Red to Purple (RdPu)": d3.interpolateRdPu,
+                    "Yellow to Green to Blue (YlGnBu)": d3.interpolateYlGnBu,
+                    "Yellow to Green (YlGn)": d3.interpolateYlGn,
+                    "Yellow to Orange to Brown (YlOrBr)": d3.interpolateYlOrBr,
+                    "Yellow to Orange to Red (YlOrRd)": d3.interpolateYlOrRd
+                };
+
+                return scales[scaleName];
+            }
+        }));
+    });
+</script>
+
+<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.13.8/dist/cdn.min.js" defer></script>
+
+
+{% endblock %}
+
+{% block title %}Global ENT/OHNS Workforce{% endblock %}
+
+{% set hero_text = "Global ENT/OHNS Workforce" %}
+{% set hero_subtitle = "Number of OHNS physicians per 100,000 population (density)" %}
+
+{% block about_content %}
+<p>The Global OHNS initiative performed a recent study quantifying the number of otolaryngology-head and neck surgery
+    (OHNS) care clinicians per capita worldwide. This was done by disseminating a cross-sectional electronic survey to
+    professional society leaders, medical licensing boards, public health officials, and practicing OHNS clinicians.
+</p>
+<p>Respondents from 114 countries comprising 84% of the world population estimate a workforce density of 2.19 OHNS
+    clinicians per 100 000 population. Variations were noted by World Health Organization regions and World Bank income
+    groups.</p>
+<p>This cross-sectional survey study provides a comprehensive assessment of the global OHNS workforce. These results can
+    guide focused investment in training and policy development to address disparities in the availability of OHNS
+    clinicians.</p>
+<p>Below are interactive maps to display the results from this study.</p>
+
+<div class="columns">
+    <div class="column is-one-quarter">
+        <p class="has-text-weight-bold"><a href='#data-table'>View the data table. <span class='icon'><i
+                        class="fa-solid fa-turn-down"></i></span></a></p>
+    </div>
+    <div class="column">
+        <div class="field is-horizontal">
+            <div class="field-label is-normal">
+                <label class="label">Color Scale</label>
+            </div>
+            <div class="field-body" x-data="mapController()">
+                <div class="field" >
+                    <div class="control">
+                        <div class="select" x-model="selectedColorScale" @change="updateMap">
+                            <select>
+                                {% for color in sequential_color_schemes %}
+                                <option>{{ color }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="field">
+                    <div class="control">
+                        <input class="input" type="number" placeholder="Min" x-model.number="range_min" @change="updateMap">
+                        <p class="help">Range min</p>
+                    </div>
+                </div>
+                <div class="field">
+                    <div class="control">
+                        <input class="input" type="number" placeholder="Max" x-model.number="range_max" @change="updateMap">
+                        <p class="help">Range max</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% endblock %}
+
+    {% block citation %}
+    <div class="dropdown-item ">
+        <p class="is-italic has-text-weight-semibold">Petrucci, Beatriz, Samuel Okerosi, Rolvix H. Patterson, Sara B.
+            Hobday, Valerie Salano, Christopher J. Waterworth, Robert M. Brody, et al. 2023. <a
+                href='https://jamanetwork.com/journals/jamaotolaryngology/fullarticle/2808978' target="_blank">“The
+                Global
+                Otolaryngology-Head and Neck Surgery Workforce.”</a> JAMA Otolaryngology-- Head & Neck Surgery, August.
+            https://doi.org/10.1001/jamaoto.2023.2339.</p>
+    </div>
+
+    {% endblock %}
+
+    {% block map %}
+
+    <div class="container">
+        <div class='container ' id="map" style="height:600px; background-color: #FFFFFF;"></div>
+    </div>
+    <section class="container my-6" x-data="TableHandler">
+        <div class="title" id="data-table">Data Table</div>
+        <div class="columns">
+            <div class='column is-one-third'>
+                <div class="field">
+                    <div class="control">
+                        <input class="input is-rounded is-focused" type="text" placeholder="Search" x-model="search">
+                    </div>
+                </div>
+            </div>
+            <div class="column">
+            </div>
+        </div>
+        <div class="container" style="max-height: 500px; overflow-y: auto; min-height: 500px">
+            <table class="table is-striped is-hoverable is-fullwidth">
+                <thead>
+                    <tr>
+                        <th>Country <span class='icon' x-on:click="sort('NAME_LONG')"><i
+                                    class="fa-solid fa-sort"></i></span></th>
+                        <th>Number of OHNS/ENT Providers <span class='icon'
+                                x-on:click="sort('Oral, Head, & Neck Surgeons')"><i class="fa-solid fa-sort"></i></span>
+                        </th>
+                        <th>Density of OHNS/ENT Providers per 100,000 Population <span class='icon'
+                                x-on:click="sort('Oral, Head & Neck Surgeons per Capita')"><i
+                                    class="fa-solid fa-sort"></i></span></th>
+
+                    </tr>
+                </thead>
+                <tbody>
+                    <template x-for="item in filteredData()" :key="item.NAME_LONG || 'default_' + index">
+                        <tr>
+                            <td x-text="item['NAME_LONG']"></td>
+                            <td x-text="item['Oral, Head, & Neck Surgeons']"></td>
+                            <td x-text="item['Oral, Head & Neck Surgeons per Capita']"></td>
+                        </tr>
+                    </template>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+
+
+
+    {% endblock %}
+
+    {% block scripts %}
+
+
+
+
+    <!-- <script type='module'>
+        import { createOHNSmap } from "{{ url_for('static', filename='js/maps/ohns_map.js') }}";
+        // is this an iframe?
+        const map = createOHNSmap(ohnsData, false);
+        window.map = map;
+</script> -->
+
+    {% endblock %}
