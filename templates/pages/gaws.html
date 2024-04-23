@@ -4,7 +4,23 @@
     {{ super() }}
 
     <script type="text/javascript" src="{{ url_for('static', filename='geojson/papgeo.js') }}"></script>
-
+    <script type="module">
+        import { createMap } from './static/js/maps/gaws_map.js';
+    
+        async function loadData() {
+            try {
+                const response = await fetch('{{ url_for("static", filename="geojson/papgeo.geojson") }}');
+                const papData = await response.json();
+                const map = createMap(papData, false);
+                window.map = map;
+            } catch (error) {
+                console.error('Error loading the geoJSON data:', error);
+            }
+        }
+    
+        loadData();  // Call the function to execute the fetch and map creation
+    </script>
+    
     <script type="module">
         const config = {
             searchColumn: 'NAME',
@@ -191,7 +207,7 @@
 <!-- Remove this line
 <script type="text/javascript" src="{{ url_for('static', filename='geojson/papgeo.js') }}"></script>
 -->
-
+<!-- 
 <script type="module">
     import { createMap } from './static/js/maps/gaws_map.js';
 
@@ -204,7 +220,7 @@
         })
         .catch(error => console.error('Error loading the geoJSON data:', error));
 
-</script>
+</script> -->
 
 <!-- <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.13.8/dist/cdn.min.js"></script> -->
 
