@@ -4,21 +4,74 @@
 
 {{ super() }}
 
-<script type="text/javascript" src="./static/geojson/ohns_leaflet.js"></script>
 <script type="module">
-    const config = {
-        searchColumn: 'NAME_LONG', // Example of a column used for searching
-        initialSortColumn: 'NAME_LONG',
-        columns: {
-            NAME_LONG: 'NAME_LONG',
-            'Oral, Head & Neck Surgeons per Capita': 'Oral, Head & Neck Surgeons per Capita',
-            'Oral, Head, & Neck Surgeons': 'Oral, Head, & Neck Surgeons'
-        }
-    };
+    import { createMap } from './static/js/maps/ohns_map.js';
     import { createTableHandler } from './static/js/tableHandler.js';
-    const TableHandler = createTableHandler(ohnsData.features, config);
-    window.TableHandler = TableHandler;
 
+    document.addEventListener('alpine:init', () => {
+        Alpine.data('tableMapHandler', () => ({
+            loading: true,
+            map: null,
+            tableHandler: null,
+            search: '',
+
+            async init() {
+                try {
+                    const response = await fetch('{{ url_for("static", filename="geojson/ohns_leaflet.geojson") }}');
+                    const data = await response.json();
+                    this.initializeMap(data);
+                    this.initializeTableHandler(data);
+                    this.loading = false;
+                } catch (error) {
+                    console.error('Error loading the geoJSON data:', error);
+                    this.loading = false;
+                }
+            },
+
+            initializeMap(data) {
+                this.map = createMap(data, false);
+                // Assuming your createMap function appends the map to a DOM element already
+            },
+
+            initializeTableHandler(data) {
+                const config = {
+                    searchColumn: 'NAME_LONG', // Example of a column used for searching
+                    initialSortColumn: 'NAME_LONG',
+                    columns: {
+                        NAME_LONG: 'NAME_LONG',
+                        'Oral, Head & Neck Surgeons per Capita': 'Oral, Head & Neck Surgeons per Capita',
+                        'Oral, Head, & Neck Surgeons': 'Oral, Head, & Neck Surgeons'
+                    }
+                };
+                this.tableHandler = createTableHandler(data.features, config);
+
+            },
+            get filteredData() {
+                return this.tableHandler ? this.tableHandler.filteredData() : [];
+            },
+            updateSearch() {
+                if (this.tableHandler) {
+                    this.tableHandler.search = this.search; // Update table handler's search property
+                }
+            },
+
+            sort(column) {
+                if (this.tableHandler) {
+                    this.tableHandler.sort(column);
+                }
+            },
+            roundOrNot(value) {
+                if (this.tableHandler) {
+                    return this.tableHandler.roundOrNot(value);
+                }
+            },
+            roundInt(value) {
+                if (this.tableHandler) {
+                    return this.tableHandler.roundInt(value);
+                }
+            }
+        }));
+    });
 </script>
 
 
@@ -45,7 +98,8 @@
     clinicians.</p>
 <p>Below are interactive maps to display the results from this study.</p>
 
-<p class="has-text-weight-bold"><a href='#data-table'>View the data table. <span class='icon'><i class="fa-solid fa-turn-down"></i></span></a></p>
+<p class="has-text-weight-bold"><a href='#data-table'>View the data table. <span class='icon'><i
+                class="fa-solid fa-turn-down"></i></span></a></p>
 
 
 {% endblock %}
@@ -62,11 +116,11 @@
 {% endblock %}
 
 {% block map %}
-
+<div  x-data="tableMapHandler">
 <div class="container">
     <div class='container my-6' id="map" style="height:600px; background-color: #FFFFFF;"></div>
 </div>
-<section class="container my-6" x-data="TableHandler">
+<section class="container my-6">
     <div class="title" id="data-table">Data Table</div>
     <div class="columns">
         <div class='column is-one-third'>
@@ -84,16 +138,21 @@
         <table class="table is-striped is-hoverable is-fullwidth">
             <thead>
                 <tr>
-                    <th>Country <span class='icon' x-on:click="sort('NAME_LONG')"><i class="fa-solid fa-sort"></i></span></th>
-                    <th>Number of OHNS/ENT Providers <span class='icon' x-on:click="sort('Oral, Head, & Neck Surgeons')"><i class="fa-solid fa-sort"></i></span></th>
-                    <th>Density of OHNS/ENT Providers per 100,000 Population <span class='icon' x-on:click="sort('Oral, Head & Neck Surgeons per Capita')"><i class="fa-solid fa-sort"></i></span></th>
+                    <th>Country <span class='icon' x-on:click="sort('NAME_LONG')"><i
+                                class="fa-solid fa-sort"></i></span></th>
+                    <th>Number of OHNS/ENT Providers <span class='icon'
+                            x-on:click="sort('Oral, Head, & Neck Surgeons')"><i class="fa-solid fa-sort"></i></span>
+                    </th>
+                    <th>Density of OHNS/ENT Providers per 100,000 Population <span class='icon'
+                            x-on:click="sort('Oral, Head & Neck Surgeons per Capita')"><i
+                                class="fa-solid fa-sort"></i></span></th>
 
                 </tr>
             </thead>
             <tbody>
-                <template x-for="item in filteredData()" :key="item.NAME_LONG || 'default_' + index" >
+                <template x-for="item in filteredData" :key="item.NAME_LONG || 'default_' + index">
                     <tr>
-                        <td  x-text="item['NAME_LONG']"></td>
+                        <td x-text="item['NAME_LONG']"></td>
                         <td x-text="item['Oral, Head, & Neck Surgeons']"></td>
                         <td x-text="item['Oral, Head & Neck Surgeons per Capita']"></td>
                     </tr>
@@ -102,7 +161,7 @@
         </table>
     </div>
 </section>
-
+</div>
 
 
 
@@ -110,11 +169,5 @@
 
 {% block scripts %}
 
-<script type='module'>
-        import { createOHNSmap } from "{{ url_for('static', filename='js/maps/ohns_map.js') }}";
-        // is this an iframe?
-        const map = createOHNSmap(ohnsData, false);
-        window.map = map;
-</script>
 
 {% endblock %}

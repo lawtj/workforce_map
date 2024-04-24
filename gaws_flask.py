@@ -7,6 +7,8 @@ import os
 import apprise
 from flask import Flask
 from flask_talisman import Talisman 
+from flask_compress import Compress
+
 apobj = apprise.Apprise()
 
 import mimetypes
@@ -23,6 +25,7 @@ apprise_key = os.getenv('apprise_key')
 
 
 app = Flask(__name__)
+Compress(app)
 app.config['SECRET_KEY'] = 'its-an-workforce-appppp'  # Change this to your actual secret key
 
 sequential_color_schemes = [
@@ -96,6 +99,10 @@ def OHNS():
 @app.route("/ohns_colors")
 def folium():
     return render_template("pages/ohnsv2.html", sequential_color_schemes=sequential_color_schemes)
+
+@app.route("/asynctest")
+def asynctest():
+    return render_template("pages/asynctest.html")
 
 @app.route('/contact', methods=['GET', 'POST'])
 def contact():

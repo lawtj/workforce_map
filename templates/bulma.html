@@ -33,15 +33,14 @@
 
     <div class="container">
         <p class="title is-4 has-text-centered pb-4">Our Maps</p>
-    </div>
 
 
-    <div class="container columns">
+    <div class="columns">
         <div class="column">
         {% set card_title = "Global Anesthesia Workforce Map" %}
         {% set card_content = "<p>Anesthesia provider numbers by country, provider density (per 100,000 population), and Non-physician providers (Nurse Anesthetists and others).</p><br> <p>Also includes comparison to previous Workforce Survey.</p>" %}
         {% set card_href = "/gaws" %}
-        {% set card_imgref = "static/images/card_gaws.png" %}
+        {% set card_imgref = "static/images/card_gaws_small.png" %}
         {% include 'includes/cards.html' %}
         </div>
 
@@ -49,7 +48,7 @@
         {% set card_title = "Anesthesiologists in Central, East, and Southern Africa" %}
         {% set card_content = "Explore the locations of working anesthesiologists in the Central, East, and Southern Africa region. <p>See providers at the level of the individual hospital, and aggregated by district</p>." %}
         {% set card_href = "/canesca" %}
-        {% set card_imgref = "static/images/card_canesca.png" %}
+        {% set card_imgref = "static/images/card_canesca_small.png" %}
         {% include 'includes/cards.html' %}
         </div>
 
@@ -57,11 +56,13 @@
         {% set card_title = "Global Otolaryngologist/ENT Workforce" %}
         {% set card_content = "Number of ENT physicians per country, and per 100,000 population (density) <br><br><br><br><br>" %}
         {% set card_href = "/ohns" %}
-        {% set card_imgref = "static/images/card_ohns.png" %}
+        {% set card_imgref = "static/images/card_ohns_small.png" %}
         {% include 'includes/cards.html' %}
         </div>
 
     </div>
+</div>
+
 </section>
 
 

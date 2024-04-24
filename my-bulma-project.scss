@@ -1,4 +1,4 @@
-@use "bulma/sass" with (
+@use "bulma/sass/utilities" with (
     // $primary: hsl(240,100%,50.2%)
     
     // ucsf dark
@@ -15,18 +15,46 @@
 
     $link: hsl(325, 66%, 46%),
     
-    $navbar-height: 4.25rem,
-
-    $footer-padding: 1.5rem 1.5rem 1.5rem,
   );
 
-@use "bulma/sass/utilities/mixins";
+  @use "bulma/sass/layout" with(
+    
+  $footer-padding: 1.5rem 1.5rem 1.5rem,
+  );
 
-.bulma-arrow-mixin {
-    @include mixins.arrow(blue);
-  }
+  @use "bulma/sass/components" with (
+    $navbar-height: 4.25rem,
 
-.bulma-fa-mixin {
-@include mixins.fa(1rem, 2rem);
-background-color: lavender; // For demo purposes
-}
+  );
+
+  // @forward "bulma/sass/base";
+  // @forward "bulma/sass/elements/button";
+  // @forward "bulma/sass/elements/title";
+  // @forward "bulma/sass/elements/box";
+  // @forward "bulma/sass/elements/icon";
+  // @forward "bulma/sass/elements/content";
+
+  // @forward "bulma/sass/layout/hero";
+  // @forward "bulma/sass/layout/section";
+  // @forward "bulma/sass/layout/footer";
+  // @forward "bulma/sass/layout/hero";
+  // @forward "bulma/sass/layout/container";
+  // @forward "bulma/sass/layout/level";
+
+  // @forward "bulma/sass/components/navbar";
+  // @forward "bulma/sass/components/card";
+  // @forward "bulma/sass/components/dropdown";
+  // @forward "bulma/sass/components/menu";
+@forward "bulma/sass/";
+
+
+// @use "bulma/sass/utilities/mixins";
+
+// // .bulma-arrow-mixin {
+// //     @include mixins.arrow(blue);
+// //   }
+
+// // .bulma-fa-mixin {
+// // @include mixins.fa(1rem, 2rem);
+// // background-color: lavender; // For demo purposes
+// // }
