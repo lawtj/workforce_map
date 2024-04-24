@@ -8,8 +8,8 @@ export function createMap(ohnsData, isiframe){
     return d3.interpolateRgb('#C4e4db', '#547fa1')(t);  // Simple gradient from red to blue
     }
 
-    var colorScale = d3.scaleSequential(myInterpolator)
-        .domain([0, 11]);        
+    var colorScale = d3.scaleSequential(d3.interpolatePurples)
+        .domain([0, 10]);        
         
 
     //style function
@@ -95,7 +95,7 @@ export function createMap(ohnsData, isiframe){
 
     legend.onAdd = function (map) {
         var div = L.DomUtil.create('div', 'info legend'),
-            grades = [0, 11], // Start and end points of your domain
+            grades = [0, 10], // Start and end points of your domain
             labelPoints = [0, 2, 4, 6, 7, 9, 11], // Points where labels will be added
             n = 256, // Number of different colors to represent in the gradient
             gradientHTML = '',

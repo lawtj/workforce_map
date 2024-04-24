@@ -1,4 +1,6 @@
 {% extends "layouts/map_page.html" %}
+{% set include_alpine = true %}
+
 
 {% block head %}
 {{ super() }}
@@ -14,26 +16,33 @@
             map: null,
             tableHandler: null,
             search: '',
- 
+            layer: 'gaws',
+            geojsonData: null,
+
             async init() {
-                try {
-                    const response = await fetch('{{ url_for("static", filename="geojson/papgeo.geojson") }}');
-                    const data = await response.json();
-                    this.initializeMap(data);
-                    this.initializeTableHandler(data);
-                    this.loading = false;
-                } catch (error) {
-                    console.error('Error loading the geoJSON data:', error);
-                    this.loading = false;
+                if (this.geojsonData === null) {
+                    try {
+                        const response = await fetch('{{ url_for("static", filename="geojson/papgeo.geojson") }}');
+                        this.geojsonData = await response.json();
+                        if (this.map === null) {
+                            this.initializeMap();
+                            this.initializeTableHandler();
+                        }
+                    } catch (error) {
+                        console.error('Error loading the geoJSON data:', error);
+                    }
                 }
             },
 
-            initializeMap(data) {
-                this.map = createMap(data, false);
+            initializeMap() {
+                if (this.map) {
+                    this.map.remove(); // Remove the existing map instance
+                }
+                this.map = createMap(this.geojsonData, false, this.layer);
                 // Assuming your createMap function appends the map to a DOM element already
             },
 
-            initializeTableHandler(data) {
+            initializeTableHandler() {
                 const config = {
                     searchColumn: 'NAME',
                     initialSortColumn: 'NAME',
@@ -49,17 +58,17 @@
                         'nurses2015_cap': 'nurses2015_cap'
                     }
                 };
-                this.tableHandler = createTableHandler(data.features, config);
+                this.tableHandler = createTableHandler(this.geojsonData.features, config);
 
             },
             get filteredData() {
                 return this.tableHandler ? this.tableHandler.filteredData() : [];
             },
             updateSearch() {
-            if (this.tableHandler) {
-                this.tableHandler.search = this.search; // Update table handler's search property
-            }
-        },
+                if (this.tableHandler) {
+                    this.tableHandler.search = this.search; // Update table handler's search property
+                }
+            },
 
             sort(column) {
                 if (this.tableHandler) {
@@ -75,7 +84,7 @@
                 if (this.tableHandler) {
                     return this.tableHandler.roundInt(value);
                 }
-            }
+            },
         }));
     });
 </script>
@@ -92,46 +101,72 @@
 {% set hero_subtitle = "Number of Physician Anesthesia Providers (PAPs) per 100,000 population" %}
 
 
+    {% block about_content %}
 
-{% block about_content %}
+    <p>This map shows three layers of anesthesia workforce data.
+    <ul>
+        <li>Number of Physician Anesthesia Providers (PAPs) per 100,000 population</li>
+        <li>Number of Non-Physician Anesthesia Providers (NPAPs) per 100,000 population</li>
+        <li>Number of Physician Anesthesia Providers (PAPs) per 100,000 population in 2016 (per the previous WFSA
+            Workforce
+            Survey)</li>
 
-<p>This map shows three layers of anesthesia workforce data.
-<ul>
-    <li>Number of Physician Anesthesia Providers (PAPs) per 100,000 population</li>
-    <li>Number of Non-Physician Anesthesia Providers (NPAPs) per 100,000 population</li>
-    <li>Number of Physician Anesthesia Providers (PAPs) per 100,000 population in 2016 (per the previous WFSA Workforce
-        Survey)</li>
+    </ul>
+    </p>
+    <p>In 2016, the World Federation of Societies of Anaesthesiologists performed the first survey of the global
+        anesthesia
+        workforce. Data is derived from the Global Anesthesia Workforce Survey published in 2024.</p>
 
-</ul>
-</p>
-<p>In 2016, the World Federation of Societies of Anaesthesiologists performed the first survey of the global anesthesia
-    workforce. Data is derived from the Global Anesthesia Workforce Survey published in 2024.</p>
+    <div class="columns">
+        <div class="column is-one-third">
+            <p class="has-text-weight-bold"><a href='#data-table'>View the data table. <span class='icon'><i
+                            class="fa-solid fa-turn-down"></i></span></a></p>
+        </div>
+        <div class="column is-flex is-justify-content-end">
+            <div class="field is-horizontal">
+                <div class="field-label is-normal is-flex is-flex-grow-2">
+                    <label class="label">Select map layer </label>
+                </div>
+                <div class="field-body">
+                    <div class="field">
+                        <div class="control ">
+                            <div class="select is-rounded is-normal" x-model="layer" @change="initializeMap">
+                                <select>
+                                    <option value="gaws">PAPs per 100,000 population</option>
+                                    <option value="gaws2015">PAPs per 100,000 population (2016)</option>
+                                    <option value="npap">NPAPs per 100,000 population</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
-<p class="has-text-weight-bold"><a href='#data-table'>View the data table. <span class='icon'><i
-                class="fa-solid fa-turn-down"></i></span></a></p>
+    {% endblock %}
 
-{% endblock %}
+    {% block citation %}
+    <div class="dropdown-item">
+        <p class="is-italic has-text-weight-semibold">Law, Tyler J., Michael S. Lipnick,
+            Wayne
+            Morriss, Adrian W. Gelb, et al. 2024. <a
+                href='https://journals.lww.com/anesthesia-analgesia/fulltext/9900/the_global_anesthesia_workforce_survey__updates.788.aspx'
+                target="_blank">“The Global Anesthesia Workforce Survey: Updates and Trends
+                in the
+                Anesthesia Workforce.” </a>Anesthesia & Analgesia, March,
+            10.1213/ANE.0000000000006836.</p>
+    </div>
+    {% endblock %}
 
-{% block citation %}
-<div class="dropdown-item">
-    <p class="is-italic has-text-weight-semibold">Law, Tyler J., Michael S. Lipnick,
-        Wayne
-        Morriss, Adrian W. Gelb, et al. 2024. <a
-            href='https://journals.lww.com/anesthesia-analgesia/fulltext/9900/the_global_anesthesia_workforce_survey__updates.788.aspx'
-            target="_blank">“The Global Anesthesia Workforce Survey: Updates and Trends
-            in the
-            Anesthesia Workforce.” </a>Anesthesia & Analgesia, March,
-        10.1213/ANE.0000000000006836.</p>
-</div>
-{% endblock %}
-
-{% block map %}
-<div x-data="tableMapHandler()">
+    {% block map %}
     <div class="container px-4">
+
         <div class="columns">
             <div class="container column is-three-quarters" id="map" style="height:600px; background-color: #FFFFFF;">
             </div>
             <div class="container column">
+
                 <div class="card">
                     <div class="card-header " id="card-header">
                         <div class="card-header-title is-flex is-flex-direction-column " id="card-header-title">
@@ -189,13 +224,14 @@
         </div>
     </div>
 
-    <section class="container my-6">
+    <section class="container my-6" >
         <div class="title" id="data-table">Data Table</div>
         <div class="columns">
             <div class='column is-one-third'>
                 <div class="field">
                     <div class="control">
-                        <input class="input is-rounded is-focused" type="text" placeholder="Search" x-model="search" @input="updateSearch">
+                        <input class="input is-rounded is-focused" type="text" placeholder="Search" x-model="search"
+                            @input="updateSearch">
                     </div>
                 </div>
             </div>
@@ -235,14 +271,14 @@
                             <td x-text="row.NAME "></td>
                             <td x-text="roundInt(row.totalpap)"></td>
 
-                        <td x-text="roundOrNot(row.totalpap_cap)"></td>
+                            <td x-text="roundOrNot(row.totalpap_cap)"></td>
 
-                        <td x-text="roundInt(row.physicians2015)"></td>
-                        <td x-text="roundOrNot(row.physicians2015_cap)"></td>
-                        <td x-text="roundInt(row.totalnpap)"></td>
-                        <td x-text="roundOrNot(row.totalnpap_cap)"></td>
-                        <td x-text="roundInt(row.nurses2015)"></td>
-                        <td x-text="roundOrNot(row.nurses2015_cap)"></td>
+                            <td x-text="roundInt(row.physicians2015)"></td>
+                            <td x-text="roundOrNot(row.physicians2015_cap)"></td>
+                            <td x-text="roundInt(row.totalnpap)"></td>
+                            <td x-text="roundOrNot(row.totalnpap_cap)"></td>
+                            <td x-text="roundInt(row.nurses2015)"></td>
+                            <td x-text="roundOrNot(row.nurses2015_cap)"></td>
                         </tr>
                     </template>
                 </tbody>
@@ -250,7 +286,6 @@
         </div>
 
     </section>
-</div>
 {% endblock %}
 
 {% block scripts %}
