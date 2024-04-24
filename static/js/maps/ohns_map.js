@@ -1,4 +1,4 @@
-export function createOHNSmap(ohnsData, isiframe){
+export function createMap(ohnsData, isiframe){
     const map = L.map('map', {
         noWrap: true,
     }).setView([34, 5], 2);

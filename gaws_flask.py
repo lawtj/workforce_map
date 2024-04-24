@@ -7,6 +7,8 @@ import os
 import apprise
 from flask import Flask
 from flask_talisman import Talisman 
+from flask_compress import Compress
+
 apobj = apprise.Apprise()
 
 import mimetypes
@@ -23,6 +25,7 @@ apprise_key = os.getenv('apprise_key')
 
 
 app = Flask(__name__)
+Compress(app)
 app.config['SECRET_KEY'] = 'its-an-workforce-appppp'  # Change this to your actual secret key
 
 sequential_color_schemes = [
@@ -97,17 +100,14 @@ def OHNS():
 def folium():
     return render_template("pages/ohnsv2.html", sequential_color_schemes=sequential_color_schemes)
 
+@app.route("/asynctest")
+def asynctest():
+    return render_template("pages/asynctest.html")
+
 @app.route('/contact', methods=['GET', 'POST'])
 def contact():
     form = ContactForm()
     if form.validate_on_submit():
-        # Process the data, save to database, send email, etc.
-        # proj = Project('https://redcap.ucsf.edu/api/', 'api_k')
-        # form_data = {field.name: field.data for field in form}
-        # form_data['record_id'] = proj.generate_next_record_name()
-        # form_data['gaws_contact_form_complete'] = 1
-        # print(form_data)
-        # proj.import_records([{k: form_data[k] for k in form_data if ((k != 'submit') and (k != 'csrf_token'))}], )
         apobj.add('slack://'+apprise_key+'?footer=no')
         apobj.notify(title='Workforce Map Contact Submission', body='Name: '+form.name.data+'\nEmail: '+form.email.data+'\nInquiry Type: '+form.inquiry_type.data+'\nMessage: '+form.message.data)
         flash('Thank you for your message. We will get back to you soon!', 'success')
