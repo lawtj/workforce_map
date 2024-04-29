@@ -1,17 +1,16 @@
-export function createMap(papData,isiframe) {
-    var mapoption = 'pap';
+export function createMap(papData, isiframe, layer) {
     var southWest = L.latLng(-90, -180);
     var northEast = L.latLng(90, 180);
     var bounds = L.latLngBounds(southWest, northEast);
 
     const map = L.map('map',).setView([24.653024159812, 10.732421875000002], 2);
 
-    const tiles = L.tileLayer('https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png', {
-        maxZoom: 19,
-        attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
-            noWrap: true,
-            bounds: bounds,
-    }).addTo(map);
+    // const tiles = L.tileLayer('https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png', {
+    //     maxZoom: 19,
+    //     attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+    //         noWrap: true,
+    //         bounds: bounds,
+    // }).addTo(map);
 
     function getColor(value) {
         return value >= 20 ? '#4575b4' :
@@ -23,31 +22,49 @@ export function createMap(papData,isiframe) {
                                 '#d73027'; // for value < 1
     }
 
+    var colorScale = d3.scaleSequential(d3.interpolatePurples)
+        .domain([0, 11]);
+
     //style function
     function styleGeo(geojson) {
-        if (mapoption === 'gaws'){
-            var value = geojson.properties['totalpap_cap'];
-        } else {
-            var value = geojson.properties['physicians2015_cap'];
+        let value
+        if (layer === 'gaws' || layer === 'gaws2015') {
+            if (layer === 'gaws') {
+                value = geojson.properties['totalpap_cap'];
+            } else if (layer === 'gaws2015') {
+                value = geojson.properties['physicians2015_cap'];
+            }
         }
-        // check if value is null or undefined
-        if (value === null || value === undefined || value === "No data") {
+
+        if (layer === 'gaws' || layer === 'gaws2015') {
+            // check if value is null or undefined
+            if (value === null || value === undefined || value === "No data") {
+                return {
+                    fillColor: 'black',
+                    fillOpacity: 0.4,
+                    color: 'black',
+                    opacity: 1,
+                    weight: 1
+                }
+            } else {
+                return {
+                    fillColor: getColor(value),
+                    fillOpacity: .7,
+                    color: 'black',
+                    opacity: 1,
+                    weight: 1
+                };
+            }
+        } else if (layer === 'npap') {
+            value = geojson.properties['totalnpap_cap'];
             return {
-                fillColor: 'black',
+                fillColor: colorScale(value),
                 fillOpacity: 0.4,
                 color: 'black',
                 opacity: 1,
                 weight: 1
             };
-
         }
-        return {
-            fillColor: getColor(value),
-            fillOpacity: .7,
-            color: 'black',
-            opacity: 1,
-            weight: 1
-        };
 
     }
 
@@ -106,11 +123,24 @@ export function createMap(papData,isiframe) {
         return properties;
     }
 
-    const propertiesToDisplay = {
-        'totalpap': 'Total PAPs',
-        'totalpap_cap': 'Total PAP Density',
-        // Add other properties here
+    let propertiesToDisplay;
+    if (layer === 'gaws') {
+        propertiesToDisplay = {
+            'totalpap': 'PAPs',
+            'totalpap_cap': 'PAP density'
+        }
+    } else if (layer === 'gaws2015') {
+        propertiesToDisplay = {
+            'physicians2015': 'PAPs (2016)',
+            'physicians2015_cap': 'PAP density (2016)'
+        }
+    } else if (layer === 'npap') {
+        propertiesToDisplay = {
+            'totalnpap': 'NPAPs',
+            'totalnpap_cap': 'NPAP density',
+        }
     }
+
 
     function onEachFeature(feature, layer) {
         var featureProperties = extractProperties(feature);
@@ -139,33 +169,33 @@ export function createMap(papData,isiframe) {
                 mouseover: highlightGeo,
                 mouseout: resetGeo,
                 click: function (e) {
-                        if (isiframe === false) {
-                            
-                            document.getElementById('country-name').innerHTML = feature.properties['NAME'];
-                            if (featureProperties['population'] === 'No data' || featureProperties['population'] === null || isNaN(featureProperties['population'])) {
-                                document.getElementById('country-population').innerHTML = 'Population: No data';
-                            } else {
-                                document.getElementById('country-population').innerHTML = 'Population: ' + (featureProperties['population'] / 10).toFixed(2) + ' million';
-                            }
-                            document.getElementById('country-totalpap').innerHTML = featureProperties['totalpap'].toLocaleString();
-                            document.getElementById('country-totalpap_cap').innerHTML = featureProperties['totalpap_cap']
-                            document.getElementById('country-PAP2015').innerHTML = featureProperties['physicians2015'].toLocaleString();
-                            document.getElementById('country-pap_density_2015').innerHTML = featureProperties['physicians2015_cap']
-                            document.getElementById('country-totalnpap').innerHTML = featureProperties['totalnpap'].toLocaleString();
-                            document.getElementById('country-totalnpap_cap').innerHTML = featureProperties['totalnpap_cap']
-                            document.getElementById('country-NPAP2015').innerHTML = featureProperties['nurses2015'].toLocaleString();
-                            document.getElementById('country-npap_density_2015').innerHTML = featureProperties['nurses2015_cap']
-                            document.getElementById('country-details').style.display = '';
-                            if (featureProperties['totalpap_cap'] === 'No data' || featureProperties['totalpap_cap'] === null || isNaN(featureProperties['totalpap_cap'])) {
-                                document.getElementById('card-header').style.backgroundColor = hexToRGBA('black', 0.7);
-                                document.getElementById('card-header-title').classList.remove('is-size-4')
-                            } else {
-                                document.getElementById('card-header').style.backgroundColor = hexToRGBA(getColor(featureProperties['totalpap_cap']), 0.7);
-                            }
-                            document.getElementById('card-header-title').classList.add('is-size-4')
+                    if (isiframe === false) {
+
+                        document.getElementById('country-name').innerHTML = feature.properties['NAME'];
+                        if (featureProperties['population'] === 'No data' || featureProperties['population'] === null || isNaN(featureProperties['population'])) {
+                            document.getElementById('country-population').innerHTML = 'Population: No data';
                         } else {
-                            console.log('this is an iframe, suppressing clicks')
+                            document.getElementById('country-population').innerHTML = 'Population: ' + (featureProperties['population'] / 10).toFixed(2) + ' million';
                         }
+                        document.getElementById('country-totalpap').innerHTML = featureProperties['totalpap'].toLocaleString();
+                        document.getElementById('country-totalpap_cap').innerHTML = featureProperties['totalpap_cap']
+                        document.getElementById('country-PAP2015').innerHTML = featureProperties['physicians2015'].toLocaleString();
+                        document.getElementById('country-pap_density_2015').innerHTML = featureProperties['physicians2015_cap']
+                        document.getElementById('country-totalnpap').innerHTML = featureProperties['totalnpap'].toLocaleString();
+                        document.getElementById('country-totalnpap_cap').innerHTML = featureProperties['totalnpap_cap']
+                        document.getElementById('country-NPAP2015').innerHTML = featureProperties['nurses2015'].toLocaleString();
+                        document.getElementById('country-npap_density_2015').innerHTML = featureProperties['nurses2015_cap']
+                        document.getElementById('country-details').style.display = '';
+                        if (featureProperties['totalpap_cap'] === 'No data' || featureProperties['totalpap_cap'] === null || isNaN(featureProperties['totalpap_cap'])) {
+                            document.getElementById('card-header').style.backgroundColor = hexToRGBA('black', 0.7);
+                            document.getElementById('card-header-title').classList.remove('is-size-4')
+                        } else {
+                            document.getElementById('card-header').style.backgroundColor = hexToRGBA(getColor(featureProperties['totalpap_cap']), 0.7);
+                        }
+                        document.getElementById('card-header-title').classList.add('is-size-4')
+                    } else {
+                        console.log('this is an iframe, suppressing clicks')
+                    }
                 }
             });
         } catch (e) {
@@ -189,14 +219,14 @@ export function createMap(papData,isiframe) {
     ).addTo(map);
 
     var legend = L.control({ position: 'bottomleft' });
+    /////////////////////////////// legend control
 
+    // first if it is gaws or gaws2015
+    if (layer === 'gaws' || layer === 'gaws2015') {
     legend.onAdd = function (map) {
         var div = L.DomUtil.create('div', 'info legend'),
             grades = [0, 1, 3, 5, 10, 15, 20],
             labels = [];
-
-
-
 
         // Generate a label with a colored square for each interval
         for (var i = 0; i < grades.length; i++) {
@@ -211,5 +241,40 @@ export function createMap(papData,isiframe) {
     };
 
     legend.addTo(map);
+} else if (layer === 'npap') {
+    
+    legend.onAdd = function (map) {
+        var div = L.DomUtil.create('div', 'info legend'),
+            grades = [0, 10], // Start and end points of your domain
+            labelPoints = [0, 2, 4, 6, 8, 10], // Points where labels will be added
+            n = 256, // Number of different colors to represent in the gradient
+            gradientHTML = '',
+            labelsHTML = '<div class="legend-labels">';
+
+        // Add labels
+        for (var j = 0; j < labelPoints.length; j++) {
+            labelsHTML += `<span style="left:${(labelPoints[j] / grades[1] * 100)}%">${labelPoints[j]}</span>`;
+        }
+        labelsHTML += '</div>';
+
+        // Create a gradient by iterating over a range of values
+        for (var i = 0; i < n; i++) {
+            var value = grades[0] + i * (grades[1] - grades[0]) / n;
+            var color = colorScale(value);
+            gradientHTML += `<i style="background-color:${color};"></i>`;
+        }
+
+        // Add labels and gradient bar to the legend
+        div.innerHTML = labelsHTML + '<div class="legend-gradient">' + gradientHTML + '</div>';
+
+        // Add caption
+        div.innerHTML += '<div>NPAPs per 100,000 population<br></div>';
+
+        return div;
+    };
+
+
+    legend.addTo(map);
+}
     return map;
 }

@@ -78,11 +78,7 @@ def render_iframe(iframe_name):
 
 @app.route("/")
 def bulma():
-    return render_template("bulma.html")
-
-@app.route("/tailwind")
-def tailwind():
-    return render_template("home.html")
+    return render_template("pages/home.html")
 
 @app.route("/gaws")
 def gaws():

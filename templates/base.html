@@ -11,15 +11,16 @@
   <script src="https://kit.fontawesome.com/11e8878944.js" crossorigin="anonymous"></script>
 
   <style>
-
-.footer-logo {
-  max-height: 100px;  /* Control the maximum height common to both */
-  max-width: 100%;  /* Ensure the width does not exceed the container size */
-  width: auto;  /* Maintain the aspect ratio */
-  height: auto;  /* Adjust the height automatically */
-}
-
-
+    .footer-logo {
+      max-height: 100px;
+      /* Control the maximum height common to both */
+      max-width: 100%;
+      /* Ensure the width does not exceed the container size */
+      width: auto;
+      /* Maintain the aspect ratio */
+      height: auto;
+      /* Adjust the height automatically */
+    }
   </style>
 
   {% block head %}
@@ -38,22 +39,27 @@
   {% block footer %}
 
   <footer class="footer has-background-white-ter">
-    <div class="level">
-      <div class="level-item">
-        <img src="static/images/logo-chesa.png" alt="Chesa Logo" class="footer-logo">
-      </div>
-      <div class="level-item">
-        <img src="static/images/logo_ohns_small.png" alt="Global OHNS" class="footer-logo">
-      </div>
-      <div class="level-item">
+    <!-- centered text -->
+    <div class="content has-text-centered">
+      <p>
+        This website is a collaboration between:
+      </p>
+      <div class="level">
+        <div class="level-item">
+          <img src="static/images/logo-chesa.png" alt="Chesa Logo" class="footer-logo">
+        </div>
+        <div class="level-item">
+          <img src="static/images/ohns_text_alpha_small.png" alt="Global OHNS" class="footer-logo">
+        </div>
+        <!-- <div class="level-item">
         <img src="static/images/wfsa_logo_alpha_small.png" alt="WFSA" class="footer-logo">
+      </div> -->
+        <div class="level-item">
+          <img src="static/images/logo_rcsi_small.png" alt="RCSI" class="footer-logo">
+        </div>
       </div>
-      <div class="level-item">
-        <img src="static/images/logo_rcsi_small.png" alt="RCSI" class="footer-logo">
-      </div>
-    </div>
   </footer>
-  
+
 
   {% endblock %}
 
