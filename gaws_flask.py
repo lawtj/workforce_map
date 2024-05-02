@@ -92,13 +92,14 @@ def CANESCA():
 def OHNS():
     return render_template("pages/ohns.html")
 
+@app.route('/wfns')
+def WFNS():
+    return render_template('pages/wfns.html')
+
 @app.route("/ohns_colors")
 def folium():
     return render_template("pages/ohnsv2.html", sequential_color_schemes=sequential_color_schemes)
 
-@app.route("/asynctest")
-def asynctest():
-    return render_template("pages/asynctest.html")
 
 @app.route('/contact', methods=['GET', 'POST'])
 def contact():

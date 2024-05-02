@@ -5,7 +5,7 @@
 {{ super() }}
 
 <script type="module">
-    import { createMap } from './static/js/maps/ohns_map.js';
+    import { createMap } from './static/js/maps/wfns_map.js';
     import { createTableHandler } from './static/js/tableHandler.js';
 
     document.addEventListener('alpine:init', () => {
@@ -17,7 +17,7 @@
 
             async init() {
                 try {
-                    const response = await fetch('{{ url_for("static", filename="geojson/ohns_leaflet.geojson") }}');
+                    const response = await fetch('{{ url_for("static", filename="geojson/wfns.geojson.gz") }}');
                     const data = await response.json();
                     this.initializeMap(data);
                     this.initializeTableHandler(data);
@@ -39,8 +39,8 @@
                     initialSortColumn: 'NAME_LONG',
                     columns: {
                         NAME_LONG: 'NAME_LONG',
-                        'Oral, Head & Neck Surgeons per Capita': 'Oral, Head & Neck Surgeons per Capita',
-                        'Oral, Head, & Neck Surgeons': 'Oral, Head, & Neck Surgeons'
+                        'density_2022': 'density_2022',
+                        'workforce_2022': 'workforce_2022'
                     }
                 };
                 this.tableHandler = createTableHandler(data.features, config);
@@ -126,7 +126,7 @@
         <div class='column is-one-third'>
             <div class="field">
                 <div class="control">
-                    <input class="input is-rounded is-focused" type="text" placeholder="Search" x-model="search">
+                    <input class="input is-rounded is-focused" type="text" placeholder="Search" x-model="search" @input='updateSearch'>
                 </div>
             </div>
         </div>
@@ -140,11 +140,11 @@
                 <tr>
                     <th>Country <span class='icon' x-on:click="sort('NAME_LONG')"><i
                                 class="fa-solid fa-sort"></i></span></th>
-                    <th>Number of OHNS/ENT Providers <span class='icon'
-                            x-on:click="sort('Oral, Head, & Neck Surgeons')"><i class="fa-solid fa-sort"></i></span>
+                    <th>Number of Neurosurgeons <span class='icon'
+                            x-on:click="sort('workforce_2022')"><i class="fa-solid fa-sort"></i></span>
                     </th>
-                    <th>Density of OHNS/ENT Providers per 100,000 Population <span class='icon'
-                            x-on:click="sort('Oral, Head & Neck Surgeons per Capita')"><i
+                    <th>Density of Neurosurgeons per 100,000 Population <span class='icon'
+                            x-on:click="sort('density_2022')"><i
                                 class="fa-solid fa-sort"></i></span></th>
 
                 </tr>
@@ -153,8 +153,8 @@
                 <template x-for="item in filteredData" :key="item.NAME_LONG || 'default_' + index">
                     <tr>
                         <td x-text="item['NAME_LONG']"></td>
-                        <td x-text="item['Oral, Head, & Neck Surgeons']"></td>
-                        <td x-text="item['Oral, Head & Neck Surgeons per Capita']"></td>
+                        <td x-text="item['workforce_2022']"></td>
+                        <td x-text="item['density_2022']"></td>
                     </tr>
                 </template>
             </tbody>

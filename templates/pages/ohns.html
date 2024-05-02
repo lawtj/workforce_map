@@ -50,6 +50,7 @@
                 return this.tableHandler ? this.tableHandler.filteredData() : [];
             },
             updateSearch() {
+                console.log('updating search')
                 if (this.tableHandler) {
                     this.tableHandler.search = this.search; // Update table handler's search property
                 }
@@ -126,7 +127,7 @@
         <div class='column is-one-third'>
             <div class="field">
                 <div class="control">
-                    <input class="input is-rounded is-focused" type="text" placeholder="Search" x-model="search">
+                    <input class="input is-rounded is-focused" type="text" placeholder="Search" x-model="search" @input='updateSearch'>
                 </div>
             </div>
         </div>
