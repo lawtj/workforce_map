@@ -170,12 +170,12 @@ export function createMap(papData, isiframe, layer) {
                 mouseout: resetGeo,
                 click: function (e) {
                     if (isiframe === false) {
-
+                       
                         document.getElementById('country-name').innerHTML = feature.properties['NAME_LONG'];
-                        if (featureProperties['population'] === 'No data' || featureProperties['population'] === null || isNaN(featureProperties['population'])) {
+                        if (feature.properties['population'] === 'No data' || feature.properties['population'] === null || isNaN(feature.properties['population'])) {
                             document.getElementById('country-population').innerHTML = 'Population: No data';
                         } else {
-                            document.getElementById('country-population').innerHTML = 'Population: ' + (featureProperties['population'] / 10).toFixed(2) + ' million';
+                            document.getElementById('country-population').innerHTML = 'Population: ' + (feature.properties['population'] ).toFixed(2) + ' million';
                         }
                         document.getElementById('country-totalpap').innerHTML = featureProperties['totalpap'].toLocaleString();
                         document.getElementById('country-totalpap_cap').innerHTML = featureProperties['totalpap_cap']

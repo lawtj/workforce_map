@@ -2,3 +2,4 @@
 .streamlit
 *.pyc
 .env
+*.csv

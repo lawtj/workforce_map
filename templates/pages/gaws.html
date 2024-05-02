@@ -5,7 +5,6 @@
 {% block head %}
 {{ super() }}
 
-<!-- <script type="text/javascript" src="{{ url_for('static', filename='geojson/papgeo.js') }}"></script> -->
 <script type="module">
     import { createMap } from './static/js/maps/gaws_map.js';
     import { createTableHandler } from './static/js/tableHandler.js';
@@ -119,10 +118,12 @@
 
     <div class="columns">
         <div class="column is-one-third">
-            <p class="has-text-weight-bold"><a href='#data-table'>View the data table. <span class='icon'><i
+            <p class="has-text-weight-bold"><a href='#data-table'>View the data table below. <span class='icon'><i
                             class="fa-solid fa-turn-down"></i></span></a></p>
+                            <p class="has-text-weight-bold"><a href='{{ url_for("static", filename="raw/gaws.csv") }}'>Download the data <span class='icon'><i
+                                class="fa-solid fa-download"></i></span></a></p>
         </div>
-        <div class="column is-flex is-justify-content-end">
+        <div class="column is-flex is-justify-content-end is-align-items-end">
             <div class="field is-horizontal">
                 <div class="field-label is-normal is-flex is-flex-grow-2">
                     <label class="label">Select map layer </label>
@@ -163,7 +164,7 @@
     <div class="container px-4">
 
         <div class="columns">
-            <div class="container column is-three-quarters" id="map" style="height:600px; background-color: #FFFFFF;">
+            <div class="container column is-three-quarters" id="map" style="height:600px;  background-color: #fafafa;">
             </div>
             <div class="container column">
 
@@ -289,26 +290,6 @@
 {% endblock %}
 
 {% block scripts %}
-
-<!-- Remove this line
-<script type="text/javascript" src="{{ url_for('static', filename='geojson/papgeo.js') }}"></script>
--->
-<!-- 
-<script type="module">
-    import { createMap } from './static/js/maps/gaws_map.js';
-
-    // Fetch the geoJSON data
-    fetch('{{ url_for("static", filename="geojson/papgeo.geojson") }}')
-        .then(response => response.json())
-        .then(papData => {
-            const map = createMap(papData, false);
-            window.map = map;
-        })
-        .catch(error => console.error('Error loading the geoJSON data:', error));
-
-</script> -->
-
-<!-- <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.13.8/dist/cdn.min.js"></script> -->
 
 
 {% endblock %}

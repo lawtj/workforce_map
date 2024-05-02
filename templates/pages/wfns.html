@@ -80,23 +80,15 @@
 
 {% endblock %}
 
-{% block title %}Global ENT/OHNS Workforce{% endblock %}
+{% block title %}Global Neurosurgical Workforce{% endblock %}
 
-{% set hero_text = "Global ENT/OHNS Workforce" %}
-{% set hero_subtitle = "Number of OHNS physicians per 100,000 population (density)" %}
+{% set hero_text = "Global Neurosurgical Workforce" %}
+{% set hero_subtitle = "Number of Neurosurgeons per 100,000 population (density)" %}
 
 {% block about_content %}
-<p>The Global OHNS initiative performed a recent study quantifying the number of otolaryngology-head and neck surgery
-    (OHNS) care clinicians per capita worldwide. This was done by disseminating a cross-sectional electronic survey to
-    professional society leaders, medical licensing boards, public health officials, and practicing OHNS clinicians.
+<p>The World Neurosurgery Workforce Map is an interactive, ongoing, and open-source project by WFNS to better pinpoint the areas most in need of neurosurgical support. You can get to know how many neurosurgeons are available in your country or any other country, and also the density of Neurosurgeons per 100,000 in any country in the world.
+
 </p>
-<p>Respondents from 114 countries comprising 84% of the world population estimate a workforce density of 2.19 OHNS
-    clinicians per 100 000 population. Variations were noted by World Health Organization regions and World Bank income
-    groups.</p>
-<p>This cross-sectional survey study provides a comprehensive assessment of the global OHNS workforce. These results can
-    guide focused investment in training and policy development to address disparities in the availability of OHNS
-    clinicians.</p>
-<p>Below are interactive maps to display the results from this study.</p>
 
 <p class="has-text-weight-bold"><a href='#data-table'>View the data table. <span class='icon'><i
                 class="fa-solid fa-turn-down"></i></span></a></p>
@@ -105,62 +97,64 @@
 {% endblock %}
 
 {% block citation %}
+
+<style>.dropdown-item {
+    word-wrap: break-word; /* Ensure long words do not cause overflow */
+}</style>
 <div class="dropdown-item ">
-    <p class="is-italic has-text-weight-semibold">Petrucci, Beatriz, Samuel Okerosi, Rolvix H. Patterson, Sara B.
-        Hobday, Valerie Salano, Christopher J. Waterworth, Robert M. Brody, et al. 2023. <a
-            href='https://jamanetwork.com/journals/jamaotolaryngology/fullarticle/2808978' target="_blank">“The Global
-            Otolaryngology-Head and Neck Surgery Workforce.”</a> JAMA Otolaryngology-- Head & Neck Surgery, August.
-        https://doi.org/10.1001/jamaoto.2023.2339.</p>
+    <p class="is-italic has-text-weight-semibold">Gupta, Saksham, Zsombor T. Gal, Tejas S. Athni, Chrystal Calderon, William É. Callison, Olaoluwa E. Dada, Winston Lie, et al. 2024. <a href='https://doi.org/10.3171/2023.9.JNS231615' target="_blank"> “Mapping the Global Neurosurgery Workforce.
+        Part 1: Consultant Neurosurgeon Density.” </a> Journal of Neurosurgery -1 (aop): 1–9.
+</p>
 </div>
 
 {% endblock %}
 
 {% block map %}
-<div  x-data="tableMapHandler">
-<div class="container">
-    <div class='container my-6' id="map" style="height:600px; background-color: #FFFFFF;"></div>
-</div>
-<section class="container my-6">
-    <div class="title" id="data-table">Data Table</div>
-    <div class="columns">
-        <div class='column is-one-third'>
-            <div class="field">
-                <div class="control">
-                    <input class="input is-rounded is-focused" type="text" placeholder="Search" x-model="search" @input='updateSearch'>
+<div x-data="tableMapHandler">
+    <div class="container">
+        <div class='container my-6' id="map" style="height:600px; background-color: #fafafa;"></div>
+    </div>
+    <section class="container my-6">
+        <div class="title" id="data-table">Data Table</div>
+        <div class="columns">
+            <div class='column is-one-third'>
+                <div class="field">
+                    <div class="control">
+                        <input class="input is-rounded is-focused" type="text" placeholder="Search" x-model="search"
+                            @input='updateSearch'>
+                    </div>
                 </div>
             </div>
-        </div>
-        <div class="column">
+            <div class="column">
 
+            </div>
         </div>
-    </div>
-    <div class="container" style="max-height: 500px; overflow-y: auto; min-height: 500px">
-        <table class="table is-striped is-hoverable is-fullwidth">
-            <thead>
-                <tr>
-                    <th>Country <span class='icon' x-on:click="sort('NAME_LONG')"><i
-                                class="fa-solid fa-sort"></i></span></th>
-                    <th>Number of Neurosurgeons <span class='icon'
-                            x-on:click="sort('workforce_2022')"><i class="fa-solid fa-sort"></i></span>
-                    </th>
-                    <th>Density of Neurosurgeons per 100,000 Population <span class='icon'
-                            x-on:click="sort('density_2022')"><i
-                                class="fa-solid fa-sort"></i></span></th>
-
-                </tr>
-            </thead>
-            <tbody>
-                <template x-for="item in filteredData" :key="item.NAME_LONG || 'default_' + index">
+        <div class="container" style="max-height: 500px; overflow-y: auto; min-height: 500px">
+            <table class="table is-striped is-hoverable is-fullwidth">
+                <thead>
                     <tr>
-                        <td x-text="item['NAME_LONG']"></td>
-                        <td x-text="item['workforce_2022']"></td>
-                        <td x-text="item['density_2022']"></td>
+                        <th>Country <span class='icon' x-on:click="sort('NAME_LONG')"><i
+                                    class="fa-solid fa-sort"></i></span></th>
+                        <th>Number of Neurosurgeons <span class='icon' x-on:click="sort('workforce_2022')"><i
+                                    class="fa-solid fa-sort"></i></span>
+                        </th>
+                        <th>Density of Neurosurgeons per 100,000 Population <span class='icon'
+                                x-on:click="sort('density_2022')"><i class="fa-solid fa-sort"></i></span></th>
+
                     </tr>
-                </template>
-            </tbody>
-        </table>
-    </div>
-</section>
+                </thead>
+                <tbody>
+                    <template x-for="item in filteredData" :key="item.NAME_LONG || 'default_' + index">
+                        <tr>
+                            <td x-text="item['NAME_LONG']"></td>
+                            <td x-text="item['workforce_2022']"></td>
+                            <td x-text="item['density_2022']"></td>
+                        </tr>
+                    </template>
+                </tbody>
+            </table>
+        </div>
+    </section>
 </div>
 
 
