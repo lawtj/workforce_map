@@ -92,13 +92,14 @@ def CANESCA():
 def OHNS():
     return render_template("pages/ohns.html")
 
+@app.route('/wfns')
+def WFNS():
+    return render_template('pages/wfns.html')
+
 @app.route("/ohns_colors")
 def folium():
     return render_template("pages/ohnsv2.html", sequential_color_schemes=sequential_color_schemes)
 
-@app.route("/asynctest")
-def asynctest():
-    return render_template("pages/asynctest.html")
 
 @app.route('/contact', methods=['GET', 'POST'])
 def contact():
@@ -111,8 +112,11 @@ def contact():
         return redirect(url_for('contact'))
     return render_template('pages/contact.html', form=form)
 
-
-Talisman(app, content_security_policy=None)
+if os.getenv('local_testing'):
+    pass
+else:
+    print('talisman activated')
+    Talisman(app, content_security_policy=None)
 
 if __name__ == "__main__":
     app.run(debug=True)

@@ -53,6 +53,7 @@ export function createTableHandler(data, config, search) {
                     try {
                         return converted_dataset.properties[this.searchColumn].toLowerCase().includes(this.search.toLowerCase());
                     } catch (error) {
+                        console.log(converted_dataset.properties)
                         console.log('error on: ', converted_dataset.properties[this.searchColumn], 'with search: ', this.searchColumn)
                         return false;
                     }
