@@ -111,8 +111,11 @@ def contact():
         return redirect(url_for('contact'))
     return render_template('pages/contact.html', form=form)
 
-
-Talisman(app, content_security_policy=None)
+if os.getenv('local_testing'):
+    pass
+else:
+    print('talisman activated')
+    Talisman(app, content_security_policy=None)
 
 if __name__ == "__main__":
     app.run(debug=True)

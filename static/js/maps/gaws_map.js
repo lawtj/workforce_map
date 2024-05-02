@@ -150,8 +150,8 @@ export function createMap(papData, isiframe, layer) {
         try {
 
             // Check for and add the country name
-            if (feature.properties && feature.properties['NAME']) {
-                tooltipContent += '<strong>Country:</strong> ' + feature.properties['NAME'];
+            if (feature.properties && feature.properties['NAME_LONG']) {
+                tooltipContent += '<strong>Country:</strong> ' + feature.properties['NAME_LONG'];
             }
             // Loop over each property and add its data
             for (const key in propertiesToDisplay) {
@@ -171,7 +171,7 @@ export function createMap(papData, isiframe, layer) {
                 click: function (e) {
                     if (isiframe === false) {
 
-                        document.getElementById('country-name').innerHTML = feature.properties['NAME'];
+                        document.getElementById('country-name').innerHTML = feature.properties['NAME_LONG'];
                         if (featureProperties['population'] === 'No data' || featureProperties['population'] === null || isNaN(featureProperties['population'])) {
                             document.getElementById('country-population').innerHTML = 'Population: No data';
                         } else {

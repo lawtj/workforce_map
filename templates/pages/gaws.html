@@ -22,7 +22,7 @@
             async init() {
                 if (this.geojsonData === null) {
                     try {
-                        const response = await fetch('{{ url_for("static", filename="geojson/papgeo.geojson") }}');
+                        const response = await fetch('{{ url_for("static", filename="geojson/gaws_merged.geojson.gz") }}');
                         this.geojsonData = await response.json();
                         if (this.map === null) {
                             this.initializeMap();
@@ -44,10 +44,10 @@
 
             initializeTableHandler() {
                 const config = {
-                    searchColumn: 'NAME',
-                    initialSortColumn: 'NAME',
+                    searchColumn: 'NAME_LONG',
+                    initialSortColumn: 'NAME_LONG',
                     columns: {
-                        'NAME': 'NAME',
+                        'NAME_LONG': 'NAME_LONG',
                         'totalpap': 'totalpap',
                         'totalpap_cap': 'totalpap_cap',
                         'physicians2015': 'physicians2015',
@@ -244,7 +244,7 @@
                 <thead>
                     <tr>
 
-                        <th>Country <span class='icon' x-on:click="sort('NAME')"><i class="fa-solid fa-sort"></i></span>
+                        <th>Country <span class='icon' x-on:click="sort('NAME_LONG')"><i class="fa-solid fa-sort"></i></span>
                         </th>
                         <th>Total PAPs <span class='icon' x-on:click="sort('totalpap')"><i
                                     class="fa-solid fa-sort"></i></span></th>
@@ -266,9 +266,9 @@
                     <tr>
                 </thead>
                 <tbody>
-                    <template x-for="row in filteredData" :key="row.NAME || 'default_'+ index">
+                    <template x-for="row in filteredData" :key="row.ADM0_A3 || 'default_'+ index">
                         <tr>
-                            <td x-text="row.NAME "></td>
+                            <td x-text="row.NAME_LONG "></td>
                             <td x-text="roundInt(row.totalpap)"></td>
 
                             <td x-text="roundOrNot(row.totalpap_cap)"></td>
