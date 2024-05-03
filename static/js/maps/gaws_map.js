@@ -175,7 +175,7 @@ export function createMap(papData, isiframe, layer) {
                         if (feature.properties['population'] === 'No data' || feature.properties['population'] === null || isNaN(feature.properties['population'])) {
                             document.getElementById('country-population').innerHTML = 'Population: No data';
                         } else {
-                            document.getElementById('country-population').innerHTML = 'Population: ' + (feature.properties['population'] ).toFixed(2) + ' million';
+                            document.getElementById('country-population').innerHTML = 'Population: ' + (feature.properties['population']/10 ).toFixed(2) + ' million';
                         }
                         document.getElementById('country-totalpap').innerHTML = featureProperties['totalpap'].toLocaleString();
                         document.getElementById('country-totalpap_cap').innerHTML = featureProperties['totalpap_cap']

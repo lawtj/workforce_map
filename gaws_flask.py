@@ -7,7 +7,6 @@ import os
 import apprise
 from flask import Flask
 from flask_talisman import Talisman 
-from flask_compress import Compress
 
 apobj = apprise.Apprise()
 
@@ -25,7 +24,6 @@ apprise_key = os.getenv('apprise_key')
 
 
 app = Flask(__name__)
-Compress(app)
 app.config['SECRET_KEY'] = 'its-an-workforce-appppp'  # Change this to your actual secret key
 
 sequential_color_schemes = [
