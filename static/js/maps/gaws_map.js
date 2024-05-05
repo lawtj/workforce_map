@@ -22,7 +22,7 @@ export function createMap(papData, isiframe, layer) {
                                 '#d73027'; // for value < 1
     }
 
-    var colorScale = d3.scaleSequential(d3.interpolatePurples)
+    var colorScale = d3.scaleSequential(d3.interpolateBlues)
         .domain([0, 11]);
 
     //style function
@@ -104,7 +104,7 @@ export function createMap(papData, isiframe, layer) {
         };
 
         for (const prop in properties) {
-            if (feature.properties && feature.properties[prop]) {
+            if (feature.properties && feature.properties[prop] != null && feature.properties[prop] != undefined) {
                 var value = parseFloat(feature.properties[prop]);
                 if (!isNaN(value)) {
                     if (prop.endsWith('_cap')) { // For per capita values
@@ -195,7 +195,8 @@ export function createMap(papData, isiframe, layer) {
                         document.getElementById('card-header-title').classList.add('is-size-4')
                     } else {
                         console.log('this is an iframe, suppressing clicks')
-                    }
+                    };
+                    console.log(extractProperties(feature));
                 }
             });
         } catch (e) {

@@ -10,12 +10,6 @@ from flask_talisman import Talisman
 
 apobj = apprise.Apprise()
 
-import mimetypes
-
-mimetypes.add_type('text/css', '.css')
-mimetypes.add_type('application/javascript', '.js')
-mimetypes.add_type('application/geo+json', '.geojson')
-
 # import dot env and load
 from dotenv import load_dotenv
 load_dotenv()
@@ -98,6 +92,9 @@ def WFNS():
 def folium():
     return render_template("pages/ohnsv2.html", sequential_color_schemes=sequential_color_schemes)
 
+@app.route("/jsontest")
+def jsontest():
+    return render_template("index.html")
 
 @app.route('/contact', methods=['GET', 'POST'])
 def contact():

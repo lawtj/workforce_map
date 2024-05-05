@@ -70,12 +70,12 @@ export function createMap(wfnsData, isiframe){
 
         // Add 'Oral, Head & Neck Surgeons per Capita' data or 'No data' if unavailable
         tooltipContent += '<br><strong>Density of Neurosurgeons per 100k Population:</strong> ';
-        tooltipContent += (feature.properties && feature.properties['density_2022']) ?
+        tooltipContent += (feature.properties && feature.properties['density_2022'] != null && feature.properties['density_2022'] != undefined) ?
             feature.properties['density_2022'] : 'No data';
 
         // Add 'Oral, Head & Neck Surgeons' data or 'No data' if unavailable
         tooltipContent += '<br><strong>Number of Neurosurgeons:</strong> ';
-        tooltipContent += (feature.properties && feature.properties['workforce_2022']) ?
+        tooltipContent += (feature.properties && feature.properties['workforce_2022'] != null && feature.properties['workforce_2022'] != undefined) ?
             feature.properties['workforce_2022'] : 'No data';
 
         // Bind the constructed tooltip content
@@ -90,6 +90,7 @@ export function createMap(wfnsData, isiframe){
                     if (isiframe === true){
                         console.log('this is an iframe, suppressing clicks')
                     }
+                    console.log(feature.properties['NAME_LONG'], feature.properties['density_2022'], feature.properties['workforce_2022'])
                 }
         });
     };

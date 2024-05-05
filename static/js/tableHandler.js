@@ -9,8 +9,8 @@ export function createTableHandler(data, config, search) {
                 // prepare the dataset
                 data: data.map(converted_dataset => {
                     for (const key in converted_dataset.properties) {
-                        // Check if the value is 0 or 'No data' and convert it to null
-                        if (converted_dataset.properties[key] === 0 || converted_dataset.properties[key] === 'No data') {
+                        // Check if the value is 'No data' and convert it to null
+                        if (converted_dataset.properties[key] === 'No data') {
                             converted_dataset.properties[key] = null;
                         } else if (parseFloat(converted_dataset.properties[key])) { 
                             // Check if value can be parsed as a number. if it cannot, it is likely a country name, so skip it.
@@ -78,7 +78,7 @@ export function createTableHandler(data, config, search) {
             },
             roundOrNot(value) {
 
-                if (value === 'No data' || value === 0 || value === null || isNaN(value)) {
+                if (value === 'No data' ||  value === null || isNaN(value)) {
                     return null;
                 } else {
                     var parsed = parseFloat(value);
@@ -88,7 +88,7 @@ export function createTableHandler(data, config, search) {
             },
 
             roundInt(value) {
-                if (value === 'No data' || value === 0 || value === null || isNaN(value)) {
+                if (value === 'No data' || value === null || isNaN(value)) {
                     return null;
                 } else {
                     var rounded = Math.round(value);

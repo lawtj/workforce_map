@@ -17,10 +17,16 @@
 
             async init() {
                 try {
-                    const response = await fetch('{{ url_for("static", filename="geojson/wfns.geojson.gz") }}');
+                    const response = await fetch('{{ url_for("static", filename="geojson/wfns.geojson") }}');
                     const data = await response.json();
+                    const copiedData = JSON.parse(JSON.stringify(data));
+
+                    // const raw = await response.text()
+                    // console.log(raw)
+                    console.log(data.features[26])
+                    console.log(data.features[26].properties)
                     this.initializeMap(data);
-                    this.initializeTableHandler(data);
+                    this.initializeTableHandler(copiedData);
                     this.loading = false;
                 } catch (error) {
                     console.error('Error loading the geoJSON data:', error);
@@ -33,7 +39,7 @@
                 // Assuming your createMap function appends the map to a DOM element already
             },
 
-            initializeTableHandler(data) {
+            initializeTableHandler(copiedData) {
                 const config = {
                     searchColumn: 'NAME_LONG', // Example of a column used for searching
                     initialSortColumn: 'NAME_LONG',
@@ -43,7 +49,7 @@
                         'workforce_2022': 'workforce_2022'
                     }
                 };
-                this.tableHandler = createTableHandler(data.features, config);
+                this.tableHandler = createTableHandler(copiedData.features, config);
 
             },
             get filteredData() {
@@ -99,11 +105,11 @@
 {% block citation %}
 
 <style>.dropdown-item {
-    word-wrap: break-word; /* Ensure long words do not cause overflow */
+    word-wrap: normal; /* Ensure long words do not cause overflow */
 }</style>
 <div class="dropdown-item ">
     <p class="is-italic has-text-weight-semibold">Gupta, Saksham, Zsombor T. Gal, Tejas S. Athni, Chrystal Calderon, William É. Callison, Olaoluwa E. Dada, Winston Lie, et al. 2024. <a href='https://doi.org/10.3171/2023.9.JNS231615' target="_blank"> “Mapping the Global Neurosurgery Workforce.
-        Part 1: Consultant Neurosurgeon Density.” </a> Journal of Neurosurgery -1 (aop): 1–9.
+        Part 1: Consultant Neurosurgeon Density.” </a> Journal of Neurosurgery-1(aop):1–9.
 </p>
 </div>
 
@@ -148,7 +154,7 @@
                         <tr>
                             <td x-text="item['NAME_LONG']"></td>
                             <td x-text="item['workforce_2022']"></td>
-                            <td x-text="item['density_2022']"></td>
+                            <td x-text="roundOrNot(item['density_2022'])"></td>
                         </tr>
                     </template>
                 </tbody>
