@@ -11,9 +11,28 @@
             line-height: 18px;
             color: #555;
         }
-        .leaflet-container :focus:not(:focus-visible) {
-            outline: 0;
-        }
+    .legend-gradient {
+        display: flex;
+        height: 10px;
+        margin-bottom: 5px;
+    }
+
+    .legend-gradient i {
+        flex-grow: 1;
+        height: 100%;
+    }
+
+    .legend-labels {
+        display: flex;
+        justify-content: space-between;
+    }
+
+
+    .leaflet-container :focus:not(:focus-visible) {
+        outline: 0;
+    }
+
+
     </style>
 {% endblock %}
 
