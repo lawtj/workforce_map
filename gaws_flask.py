@@ -41,7 +41,7 @@ sequential_color_schemes = [
     "Yellow to Orange to Red (YlOrRd)"
 ]
 
-iframe_routes = ['gaws_iframe', 'canesca_iframe', 'ohns_iframe']
+iframe_routes = ['gaws_iframe', 'canesca_iframe', 'ohns_iframe','wfns_iframe']
 
 
 class ContactForm(FlaskForm):

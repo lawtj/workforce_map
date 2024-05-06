@@ -23,14 +23,14 @@
 
 {% block scripts %}
     <script type="module">
-        import { createMap } from "{{ url_for('static', filename='js/maps/gaws_map.js') }}";
+        import { createMap } from "{{ url_for('static', filename='js/maps/wfns_map.js') }}";
 
         async function loadMap() {
             let geojsonData = null;
             try {
-                const response = await fetch('{{ url_for("static", filename="geojson/gaws_merged.geojson.gz") }}');
+                const response = await fetch('{{ url_for("static", filename="geojson/wfns.geojson.gz") }}');
                 geojsonData = await response.json();
-                const map = createMap(geojsonData, true, 'gaws');
+                const map = createMap(geojsonData, true);
                 window.map = map;
             } catch (error) {
                 console.error('Error loading the geoJSON data:', error);
