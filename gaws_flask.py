@@ -20,26 +20,6 @@ apprise_key = os.getenv('apprise_key')
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'its-an-workforce-appppp'  # Change this to your actual secret key
 
-sequential_color_schemes = [
-    "Blues",
-    "Greens",
-    "Greys",
-    "Oranges",
-    "Purples",
-    "Reds",
-    "Blue to Green (BuGn)",
-    "Blue to Purple (BuPu)",
-    "Green to Blue (GnBu)",
-    "Orange to Red (OrRd)",
-    "Purple to Blue to Green (PuBuGn)",
-    "Purple to Blue (PuBu)",
-    "Purple to Red (PuRd)",
-    "Red to Purple (RdPu)",
-    "Yellow to Green to Blue (YlGnBu)",
-    "Yellow to Green (YlGn)",
-    "Yellow to Orange to Brown (YlOrBr)",
-    "Yellow to Orange to Red (YlOrRd)"
-]
 
 iframe_routes = ['gaws_iframe', 'canesca_iframe', 'ohns_iframe','wfns_iframe']
 
@@ -72,6 +52,7 @@ def render_iframe(iframe_name):
 def bulma():
     return render_template("pages/home.html")
 
+
 @app.route("/gaws")
 def gaws():
     return render_template("pages/gaws.html")
@@ -87,14 +68,6 @@ def OHNS():
 @app.route('/wfns')
 def WFNS():
     return render_template('pages/wfns.html')
-
-@app.route("/ohns_colors")
-def folium():
-    return render_template("pages/ohnsv2.html", sequential_color_schemes=sequential_color_schemes)
-
-@app.route("/jsontest")
-def jsontest():
-    return render_template("index.html")
 
 @app.route('/contact', methods=['GET', 'POST'])
 def contact():

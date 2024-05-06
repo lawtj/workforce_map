@@ -136,5 +136,37 @@ export function createMap(wfnsData, isiframe){
 
 
     legend.addTo(map);
+
+    var searchControl = new L.Control.Search({
+        position: 'topleft',
+        layer: geojson,
+        propertyName: 'NAME_LONG',
+        initial: false,
+        collapsed: false,
+        
+        moveToLocation: function(latlng, title, map) {
+			//map.fitBounds( latlng.layer.getBounds() );
+			var zoom = map.getBoundsZoom(latlng.layer.getBounds());
+  			map.setView(latlng, zoom); // access the zoom
+		},        
+        marker: false
+    });
+    searchControl.on('search:locationfound', function(e) {
+       // Apply the same style as the highlightGeo function
+        e.layer.setStyle({
+            fillOpacity: 0.5, // Adjusted for visibility
+            weight: 3,        // Thicker border to mimic hover style
+        });
+        if (e.layer.getTooltip()) {
+            e.layer.openTooltip(); // Open the tooltip if it exists
+        }
+
+    }).on('search:collapsed', function(e) {
+        geojson.eachLayer(function(layer) { // Reset styles for all layers
+            geojson.resetStyle(layer);
+        });
+    });
+    
+        map.addControl(searchControl);
     return map;
 }

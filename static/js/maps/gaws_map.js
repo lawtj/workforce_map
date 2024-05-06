@@ -5,12 +5,6 @@ export function createMap(papData, isiframe, layer) {
 
     const map = L.map('map',).setView([24.653024159812, 10.732421875000002], 2);
 
-    // const tiles = L.tileLayer('https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png', {
-    //     maxZoom: 19,
-    //     attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
-    //         noWrap: true,
-    //         bounds: bounds,
-    // }).addTo(map);
 
     function getColor(value) {
         return value >= 20 ? '#4575b4' :
@@ -141,6 +135,45 @@ export function createMap(papData, isiframe, layer) {
         }
     }
 
+    /// this function is called when a feature is clicked, and passes the feature to the updateDom function
+    /// this is to separate the updateDom function
+    /// not clear why the click event cant't call updateDom directly with e.target.feature but here we are
+    function clickfunc(e) {
+        var layer = e.target; // This is the layer that was clicked
+        var feature = layer.feature; // Accessing the feature directly from the layer
+        updateDom(feature);
+    } 
+
+    /// this function updates the DOM with the data from the clicked feature
+    /// called by both the click event and the search event
+    function updateDom(feature) {if (isiframe === false) {
+        var featureProperties = extractProperties(feature); // Ensure this function is callable and properly returning properties
+        document.getElementById('country-name').innerHTML = feature.properties['NAME_LONG'];
+        if (feature.properties['population'] === 'No data' || feature.properties['population'] === null || isNaN(feature.properties['population'])) {
+            document.getElementById('country-population').innerHTML = 'Population: No data';
+        } else {
+            document.getElementById('country-population').innerHTML = 'Population: ' + (feature.properties['population'] / 10).toFixed(2) + ' million';
+        }
+        document.getElementById('country-totalpap').innerHTML = featureProperties['totalpap'].toLocaleString();
+        document.getElementById('country-totalpap_cap').innerHTML = featureProperties['totalpap_cap']
+        document.getElementById('country-PAP2015').innerHTML = featureProperties['physicians2015'].toLocaleString();
+        document.getElementById('country-pap_density_2015').innerHTML = featureProperties['physicians2015_cap']
+        document.getElementById('country-totalnpap').innerHTML = featureProperties['totalnpap'].toLocaleString();
+        document.getElementById('country-totalnpap_cap').innerHTML = featureProperties['totalnpap_cap']
+        document.getElementById('country-NPAP2015').innerHTML = featureProperties['nurses2015'].toLocaleString();
+        document.getElementById('country-npap_density_2015').innerHTML = featureProperties['nurses2015_cap']
+        document.getElementById('country-details').style.display = '';
+        if (featureProperties['totalpap_cap'] === 'No data' || featureProperties['totalpap_cap'] === null || isNaN(featureProperties['totalpap_cap'])) {
+            document.getElementById('card-header').style.backgroundColor = hexToRGBA('black', 0.7);
+            document.getElementById('card-header-title').classList.remove('is-size-4')
+        } else {
+            document.getElementById('card-header').style.backgroundColor = hexToRGBA(getColor(featureProperties['totalpap_cap']), 0.7);
+        }
+        document.getElementById('card-header-title').classList.add('is-size-4')
+    } else {
+        console.log('this is an iframe, suppressing clicks')
+    };
+    }
 
     function onEachFeature(feature, layer) {
         var featureProperties = extractProperties(feature);
@@ -164,40 +197,13 @@ export function createMap(papData, isiframe, layer) {
             // Bind the constructed tooltip content
             layer.bindTooltip(tooltipContent);
 
+            /// click funciton
+            
             // Event handlers
             layer.on({
                 mouseover: highlightGeo,
                 mouseout: resetGeo,
-                click: function (e) {
-                    if (isiframe === false) {
-                       
-                        document.getElementById('country-name').innerHTML = feature.properties['NAME_LONG'];
-                        if (feature.properties['population'] === 'No data' || feature.properties['population'] === null || isNaN(feature.properties['population'])) {
-                            document.getElementById('country-population').innerHTML = 'Population: No data';
-                        } else {
-                            document.getElementById('country-population').innerHTML = 'Population: ' + (feature.properties['population']/10 ).toFixed(2) + ' million';
-                        }
-                        document.getElementById('country-totalpap').innerHTML = featureProperties['totalpap'].toLocaleString();
-                        document.getElementById('country-totalpap_cap').innerHTML = featureProperties['totalpap_cap']
-                        document.getElementById('country-PAP2015').innerHTML = featureProperties['physicians2015'].toLocaleString();
-                        document.getElementById('country-pap_density_2015').innerHTML = featureProperties['physicians2015_cap']
-                        document.getElementById('country-totalnpap').innerHTML = featureProperties['totalnpap'].toLocaleString();
-                        document.getElementById('country-totalnpap_cap').innerHTML = featureProperties['totalnpap_cap']
-                        document.getElementById('country-NPAP2015').innerHTML = featureProperties['nurses2015'].toLocaleString();
-                        document.getElementById('country-npap_density_2015').innerHTML = featureProperties['nurses2015_cap']
-                        document.getElementById('country-details').style.display = '';
-                        if (featureProperties['totalpap_cap'] === 'No data' || featureProperties['totalpap_cap'] === null || isNaN(featureProperties['totalpap_cap'])) {
-                            document.getElementById('card-header').style.backgroundColor = hexToRGBA('black', 0.7);
-                            document.getElementById('card-header-title').classList.remove('is-size-4')
-                        } else {
-                            document.getElementById('card-header').style.backgroundColor = hexToRGBA(getColor(featureProperties['totalpap_cap']), 0.7);
-                        }
-                        document.getElementById('card-header-title').classList.add('is-size-4')
-                    } else {
-                        console.log('this is an iframe, suppressing clicks')
-                    };
-                    console.log(extractProperties(feature));
-                }
+                click: clickfunc,
             });
         } catch (e) {
             console.log('Error on feature: ', feature.properties);
@@ -213,69 +219,99 @@ export function createMap(papData, isiframe, layer) {
     }
     ).addTo(map);
 
-    const gaws2015 = L.geoJSON(papData, {
-        style: styleGeo,
-        onEachFeature: onEachFeature
-    }
-    ).addTo(map);
 
     var legend = L.control({ position: 'bottomleft' });
     /////////////////////////////// legend control
 
     // first if it is gaws or gaws2015
     if (layer === 'gaws' || layer === 'gaws2015') {
-    legend.onAdd = function (map) {
-        var div = L.DomUtil.create('div', 'info legend'),
-            grades = [0, 1, 3, 5, 10, 15, 20],
-            labels = [];
+        legend.onAdd = function (map) {
+            var div = L.DomUtil.create('div', 'info legend'),
+                grades = [0, 1, 3, 5, 10, 15, 20],
+                labels = [];
 
-        // Generate a label with a colored square for each interval
-        for (var i = 0; i < grades.length; i++) {
-            div.innerHTML +=
-                '<span ><i style="background: ' + getColor(grades[i]) + '; width: 18px; height: 18px; display: inline-block;"></i> ' +
-                (grades[i] + (grades[i + 1] ? '&ndash;' + grades[i + 1] : '+')) + '</span> ';
-        }
+            // Generate a label with a colored square for each interval
+            for (var i = 0; i < grades.length; i++) {
+                div.innerHTML +=
+                    '<span ><i style="background: ' + getColor(grades[i]) + '; width: 18px; height: 18px; display: inline-block;"></i> ' +
+                    (grades[i] + (grades[i + 1] ? '&ndash;' + grades[i + 1] : '+')) + '</span> ';
+            }
 
-        div.innerHTML += '<div class="legend-caption">PAP density per 100,000 population</div>';
+            div.innerHTML += '<div class="legend-caption">PAP density per 100,000 population</div>';
 
-        return div;
+            return div;
+        };
+
+        legend.addTo(map);
+    } else if (layer === 'npap') {
+
+        legend.onAdd = function (map) {
+            var div = L.DomUtil.create('div', 'info legend'),
+                grades = [0, 10], // Start and end points of your domain
+                labelPoints = [0, 2, 4, 6, 8, 10], // Points where labels will be added
+                n = 256, // Number of different colors to represent in the gradient
+                gradientHTML = '',
+                labelsHTML = '<div class="legend-labels">';
+
+            // Add labels
+            for (var j = 0; j < labelPoints.length; j++) {
+                labelsHTML += `<span style="left:${(labelPoints[j] / grades[1] * 100)}%">${labelPoints[j]}</span>`;
+            }
+            labelsHTML += '</div>';
+
+            // Create a gradient by iterating over a range of values
+            for (var i = 0; i < n; i++) {
+                var value = grades[0] + i * (grades[1] - grades[0]) / n;
+                var color = colorScale(value);
+                gradientHTML += `<i style="background-color:${color};"></i>`;
+            }
+
+            // Add labels and gradient bar to the legend
+            div.innerHTML = labelsHTML + '<div class="legend-gradient">' + gradientHTML + '</div>';
+
+            // Add caption
+            div.innerHTML += '<div>NPAPs per 100,000 population<br></div>';
+
+            return div;
+        };
+
+
+        legend.addTo(map);
     };
-
-    legend.addTo(map);
-} else if (layer === 'npap') {
+    ///////////////////
+    var searchControl = new L.Control.Search({
+        position: 'topleft',
+        layer: geojson,
+        propertyName: 'NAME_LONG',
+        initial: false,
+        collapsed: false,
+        
+        moveToLocation: function(latlng, title, map) {
+			//map.fitBounds( latlng.layer.getBounds() );
+			var zoom = map.getBoundsZoom(latlng.layer.getBounds());
+  			map.setView(latlng, zoom); // access the zoom
+		},        
+        marker: false
+    });
+    searchControl.on('search:locationfound', function(e) {
+       // Apply the same style as the highlightGeo function
+        e.layer.setStyle({
+            fillOpacity: 0.5, // Adjusted for visibility
+            weight: 3,        // Thicker border to mimic hover style
+        });
+        if (e.layer.getTooltip()) {
+            e.layer.openTooltip(); // Open the tooltip if it exists
+        }
+        // searchfunc(e);
+        updateDom(e.layer.feature);
+    }).on('search:collapsed', function(e) {
+        geojson.eachLayer(function(layer) { // Reset styles for all layers
+            geojson.resetStyle(layer);
+        });
+    });
     
-    legend.onAdd = function (map) {
-        var div = L.DomUtil.create('div', 'info legend'),
-            grades = [0, 10], // Start and end points of your domain
-            labelPoints = [0, 2, 4, 6, 8, 10], // Points where labels will be added
-            n = 256, // Number of different colors to represent in the gradient
-            gradientHTML = '',
-            labelsHTML = '<div class="legend-labels">';
+        map.addControl(searchControl);
 
-        // Add labels
-        for (var j = 0; j < labelPoints.length; j++) {
-            labelsHTML += `<span style="left:${(labelPoints[j] / grades[1] * 100)}%">${labelPoints[j]}</span>`;
-        }
-        labelsHTML += '</div>';
-
-        // Create a gradient by iterating over a range of values
-        for (var i = 0; i < n; i++) {
-            var value = grades[0] + i * (grades[1] - grades[0]) / n;
-            var color = colorScale(value);
-            gradientHTML += `<i style="background-color:${color};"></i>`;
-        }
-
-        // Add labels and gradient bar to the legend
-        div.innerHTML = labelsHTML + '<div class="legend-gradient">' + gradientHTML + '</div>';
-
-        // Add caption
-        div.innerHTML += '<div>NPAPs per 100,000 population<br></div>';
-
-        return div;
-    };
-
-
-    legend.addTo(map);
-}
     return map;
+    
 }
