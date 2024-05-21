@@ -3,6 +3,25 @@ export function createMap(papData, isiframe, layer) {
     var northEast = L.latLng(90, 180);
     var bounds = L.latLngBounds(southWest, northEast);
 
+    // // Define the Robinson projection using Proj4
+    // var crs = new L.Proj.CRS('EPSG:54030',
+    // '+proj=robin +lon_0=0 +datum=WGS84 +units=m +no_defs', {
+    //     resolutions: [65536, 32768, 16384, 8192, 4096, 2048, 1024, 512, 256, 128, 64, 32, 16, 8, 4, 2],
+    //     origin: [0, 0],
+    //     bounds: L.bounds([-17000000, -8625150], [17000000, 8625150])
+    // }
+    // );
+
+    // // Initialize the map with the custom CRS
+    // const map = L.map('map', {
+    // crs: crs,
+    // center: [0, 0],
+    // zoom: 2,
+    // maxZoom: 15,
+    // minZoom: 0
+    // });
+
+
     const map = L.map('map',).setView([24.653024159812, 10.732421875000002], 2);
 
 
