@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+
+{% block head %}
+<title>Contact Us</title>
+{% endblock %}
+
+{% block content %}
+
+{% set hero_text = "About this page" %}
+{% set hero_subtitle = "" %}
+{% include 'includes/hero_subpage.html' %}
+<div class="content container my-6 mx-auto">
+    <div class="columns is-centered">
+        <div class="column is-half">
+            <h2 class="has-text-centered">Who We Are</h2>
+            <p>We are a collaboration of academic groups and international federations of societies focused on global
+                health. Our initiative brings together surgeons and anesthesiologists to provide a comprehensive view of
+                the global perioperative workforce.</p>
+
+            <h2 class="has-text-centered">Our Mission</h2>
+            <p>We created this website to address the crucial need for workforce mapping in resolving the surgical and
+                anesthesia workforce deficit. By consolidating data from various groups into one accessible platform, we
+                aim to streamline information retrieval and support health workforce advocacy.</p>
+
+            <h2 class="has-text-centered">Data and Contributions</h2>
+            <p>The data on this site is administrated by individual contributing groups. For updates, please contact the
+                respective contributors or use our contact page.</p>
+
+            <p>This platform is designed to enhance collaboration and understanding among healthcare professionals,
+                researchers, and policymakers, facilitating informed decision-making in global health.</p>
+        </div>
+    </div>
+
+
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+
+{% endblock %}

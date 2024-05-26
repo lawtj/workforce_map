@@ -52,6 +52,9 @@ def render_iframe(iframe_name):
 def bulma():
     return render_template("pages/home.html")
 
+@app.route("/about")
+def about():
+    return render_template("pages/about.html")
 
 @app.route("/gaws")
 def gaws():
