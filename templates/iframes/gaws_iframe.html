@@ -25,6 +25,8 @@
         /* Ensure the map has a position value that allows z-index to work */
         z-index: 1;
         /* Set a lower z-index for the map */
+        height: 100%; /* Ensure the map takes the full height */
+        width: 100%; /* Ensure the map takes the full width */
     }
 
     .modal {
@@ -45,7 +47,7 @@
 {% endblock %}
 
 {% block content %}
-<div class="container" id="map" style="height:600px"></div>
+<div id="map" style="height:600px"></div>
 <div class="modal" id="map_modal">
     <div class="modal-background"></div>
     <div class="modal-content">
