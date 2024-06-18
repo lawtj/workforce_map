@@ -190,7 +190,31 @@ export function createMap(papData, isiframe, layer) {
         }
         document.getElementById('card-header-title').classList.add('is-size-4')
     } else {
-        console.log('this is an iframe, suppressing clicks')
+        console.log('this is an iframe, suppressing clicks');
+        var featureProperties = extractProperties(feature); // Ensure this function is callable and properly returning properties
+        document.getElementById('modal-country-name').innerHTML = feature.properties['NAME_LONG'];
+        if (feature.properties['population'] === 'No data' || feature.properties['population'] === null || isNaN(feature.properties['population'])) {
+            document.getElementById('modal-country-population').innerHTML = 'Population: No data';
+        } else {
+            document.getElementById('modal-country-population').innerHTML = 'Population: ' + (feature.properties['population'] / 10).toFixed(2) + ' million';
+        }
+        document.getElementById('modal-country-totalpap').innerHTML = featureProperties['totalpap'].toLocaleString();
+        document.getElementById('modal-country-totalpap_cap').innerHTML = featureProperties['totalpap_cap'];
+        document.getElementById('modal-country-PAP2015').innerHTML = featureProperties['physicians2015'].toLocaleString();
+        document.getElementById('modal-country-pap_density_2015').innerHTML = featureProperties['physicians2015_cap'];
+        document.getElementById('modal-country-totalnpap').innerHTML = featureProperties['totalnpap'].toLocaleString();
+        document.getElementById('modal-country-totalnpap_cap').innerHTML = featureProperties['totalnpap_cap'];
+        document.getElementById('modal-country-NPAP2015').innerHTML = featureProperties['nurses2015'].toLocaleString();
+        document.getElementById('modal-country-npap_density_2015').innerHTML = featureProperties['nurses2015_cap'];
+        document.getElementById('modal-country-details').style.display = '';
+        if (featureProperties['totalpap_cap'] === 'No data' || featureProperties['totalpap_cap'] === null || isNaN(featureProperties['totalpap_cap'])) {
+            document.getElementById('modal-card-header').style.backgroundColor = hexToRGBA('black', 0.7);
+            document.getElementById('modal-card-header-title').classList.remove('is-size-4');
+        } else {
+            document.getElementById('modal-card-header').style.backgroundColor = hexToRGBA(getColor(featureProperties['totalpap_cap']), 0.7);
+        }
+        document.getElementById('modal-card-header-title').classList.add('is-size-4');
+        document.getElementById('map_modal').classList.add('is-active');
     };
     }
 
