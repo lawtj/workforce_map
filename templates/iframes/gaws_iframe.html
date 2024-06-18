@@ -1,42 +1,147 @@
 {% extends 'layouts/iframe.html' %}
 
 {% block head %}
-    <style>
-        .info.legend {
-            background: white;
-            background: rgba(255, 255, 255, 0.9);
-            box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
-            border-radius: 5px;
-            padding: 5px 10px;
-            line-height: 18px;
-            color: #555;
+<style>
+    :root {
+        color-scheme: light;
+    }
+
+    .info.legend {
+        background: white;
+        background: rgba(255, 255, 255, 0.9);
+        box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+        border-radius: 5px;
+        padding: 5px 10px;
+        line-height: 18px;
+        color: #555;
+    }
+
+    .leaflet-container :focus:not(:focus-visible) {
+        outline: 0;
+    }
+
+    #map {
+        position: relative;
+        /* Ensure the map has a position value that allows z-index to work */
+        z-index: 1;
+        /* Set a lower z-index for the map */
+    }
+
+    .modal {
+        z-index: 1000;
+        /* Set a higher z-index for the modal */
+    }
+    .modal-content {
+            max-width: 500px; /* Set a maximum width for the modal */
         }
-        .leaflet-container :focus:not(:focus-visible) {
-            outline: 0;
-        }
-    </style>
+</style>
 {% endblock %}
 
 {% block content %}
 <div class="container" id="map" style="height:600px"></div>
+<div class="modal" id="map_modal">
+    <div class="modal-background"></div>
+    <div class="modal-content">
+
+        <!-- Modal Content similar to the card -->
+        <div class="card">
+            <div class="card-header " id="modal-card-header">
+                <div class="card-header-title is-flex is-flex-direction-column " id="modal-card-header-title">
+                    <p id="modal-country-name">Click on a country to view details</p>
+                    <p class="is-size-6" id="modal-country-population"></p>
+                </div>
+            </div>
+            <div class="card-content" id="modal-country-details" style="display: none;">
+                <!-- Table for displaying country details -->
+                <p class="has-text-weight-semibold has-background-light">Physician Data</p>
+                <table class="table is-fullwidth is-narrow is-hoverable">
+                    <tbody>
+                        <tr>
+                            <td><strong>Total PAPs</strong></td>
+                            <td id="modal-country-totalpap"></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Total PAP Density</strong></td>
+                            <td id="modal-country-totalpap_cap"></td>
+                        </tr>
+                        <tr>
+                            <td><strong>PAPs in 2016</strong></td>
+                            <td id="modal-country-PAP2015"></td>
+                        </tr>
+                        <tr>
+                            <td><strong>PAP Density in 2016</strong></td>
+                            <td id="modal-country-pap_density_2015"></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <p class="has-text-weight-semibold has-background-light">Non-Physician Data</p>
+                <table class="table is-fullwidth is-narrow is-hoverable">
+                    <tbody>
+                        <tr>
+                            <td><strong>Total NPAPs</strong></td>
+                            <td id="modal-country-totalnpap"></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Total NPAP Density</strong></td>
+                            <td id="modal-country-totalnpap_cap"></td>
+                        </tr>
+                        <tr>
+                            <td><strong>NPAPs in 2016</strong></td>
+                            <td id="modal-country-NPAP2015"></td>
+                        </tr>
+                        <tr>
+                            <td><strong>NPAP Density in 2016</strong></td>
+                            <td id="modal-country-npap_density_2015"></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <button class="modal-close is-large" aria-label="close"></button>
+</div>
 {% endblock %}
 
 {% block scripts %}
-    <script type="module">
-        import { createMap } from "{{ url_for('static', filename='js/maps/gaws_map.js') }}";
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-1TPHCBCQJT"></script>
+<script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() { dataLayer.push(arguments); }
+    gtag('js', new Date());
 
-        async function loadMap() {
-            let geojsonData = null;
-            try {
-                const response = await fetch('{{ url_for("static", filename="geojson/gaws_merged.geojson.gz") }}');
-                geojsonData = await response.json();
-                const map = createMap(geojsonData, true, 'gaws');
-                window.map = map;
-            } catch (error) {
-                console.error('Error loading the geoJSON data:', error);
-            }
+    gtag('config', 'G-1TPHCBCQJT');
+</script>
+<link rel="stylesheet" href="static/dist/css/my-bulma-project.css">
+
+<script type="module">
+    import { createMap } from "{{ url_for('static', filename='js/maps/gaws_map.js') }}";
+
+    async function loadMap() {
+        let geojsonData = null;
+        try {
+            const response = await fetch('{{ url_for("static", filename="geojson/gaws_merged.geojson.gz") }}');
+            geojsonData = await response.json();
+            const map = createMap(geojsonData, true, 'gaws');
+            window.map = map;
+        } catch (error) {
+            console.error('Error loading the geoJSON data:', error);
         }
+    }
 
-        window.addEventListener('load', loadMap);
-    </script>
+    window.addEventListener('load', loadMap);
+</script>
+
+<script>
+    // Function to close the modal
+    function closeModal() {
+        document.getElementById('map_modal').classList.remove('is-active');
+    }
+
+    // Close modal on background click or close button click
+    document.querySelector('.modal-background').addEventListener('click', closeModal);
+    document.querySelector('.modal-close').addEventListener('click', closeModal);
+
+    // Close modal on keydown
+    document.addEventListener('keydown', closeModal);
+</script>
 {% endblock %}
