@@ -38,7 +38,11 @@ class ContactForm(FlaskForm):
     message = TextAreaField('Message', validators=[DataRequired()])
     submit = SubmitField('Send Message')
 
-
+# Set Content-Security-Policy header
+@app.after_request
+def add_header(response):
+    response.headers['Content-Security-Policy'] = "frame-ancestors 'self' https://wfsahq.org"
+    return response
 
 
 @app.route("/<iframe_name>")
