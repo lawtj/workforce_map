@@ -17,7 +17,7 @@
 
             async init() {
                 try {
-                    const response = await fetch('{{ url_for("static", filename="geojson/ohns.geojson.gz") }}');
+                    const response = await fetch('{{ url_for("static", filename="geojson/ohns.geojson") }}');
                     const data = await response.json();
                     this.initializeMap(data);
                     this.initializeTableHandler(data);

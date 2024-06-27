@@ -47,7 +47,7 @@
         async function loadMap() {
             let geojsonData = null;
             try {
-                const response = await fetch('{{ url_for("static", filename="geojson/wfns.geojson.gz") }}');
+                const response = await fetch('{{ url_for("static", filename="geojson/wfns.geojson") }}');
                 geojsonData = await response.json();
                 const map = createMap(geojsonData, true);
                 window.map = map;

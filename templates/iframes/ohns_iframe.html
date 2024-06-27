@@ -2,7 +2,7 @@
 
 {% block head %}
     
-    <script type="text/javascript" src="./static/geojson/ohns.geojson.gz"></script>
+    <script type="text/javascript" src="./static/geojson/ohns.geojson"></script>
     <style>
     .info.legend {
         background: white;
@@ -51,7 +51,7 @@
     async function loadMap() {
         let geojsonData = null;
         try {
-            const response = await fetch('{{ url_for("static", filename="geojson/ohns.geojson.gz") }}');
+            const response = await fetch('{{ url_for("static", filename="geojson/ohns.geojson") }}');
             geojsonData = await response.json();
             const map = createMap(geojsonData, true, 'gaws');
             window.map = map;

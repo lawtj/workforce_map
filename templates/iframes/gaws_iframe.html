@@ -122,7 +122,7 @@
     async function loadMap() {
         let geojsonData = null;
         try {
-            const response = await fetch('{{ url_for("static", filename="geojson/gaws_merged.geojson.gz") }}');
+            const response = await fetch('{{ url_for("static", filename="geojson/gaws_merged.geojson") }}');
             geojsonData = await response.json();
             const map = createMap(geojsonData, true, 'gaws');
             window.map = map;

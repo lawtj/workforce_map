@@ -24,8 +24,11 @@
             async init() {
                 if (this.geojsonData === null) {
                     try {
-                        const response = await fetch('{{ url_for("static", filename="geojson/gaws_merged.geojson.gz") }}');
+                        console.log('pre fetch');
+                        const response = await fetch('{{ url_for("static", filename="geojson/gaws_merged.geojson") }}');
+                        console.log('fetch complete, parse json')
                         this.geojsonData = await response.json();
+                        console.log('parsed json, checking map var')
                         if (this.map === null) {
                             this.initializeMap();
                             this.initializeTableHandler();
