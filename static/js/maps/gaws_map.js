@@ -22,8 +22,8 @@ export function createMap(papData, isiframe, layer) {
     // });
 
 
-    const map = L.map('map',).setView([24.653024159812, 10.732421875000002], 2);
-
+    const map = L.map('map', {attributionControl:false}).setView([24.653024159812, 10.732421875000002], 2);
+    const attribution = L.control.attribution().setPrefix("<a href='https://leafletjs.com'>Leaflet</a>").addAttribution('<a href="www.globalanesthesiamaps.com">www.globalanesthesiamaps.com</a>').addTo(map);
 
     function getColor(value) {
         return value >= 20 ? '#4575b4' :
