@@ -80,11 +80,15 @@ def WFNS():
 def contact():
     form = ContactForm()
     if form.validate_on_submit():
-        apobj.add('slack://'+apprise_key+'?footer=no')
-        apobj.notify(title='Workforce Map Contact Submission', body='Name: '+form.name.data+'\nEmail: '+form.email.data+'\nInquiry Type: '+form.inquiry_type.data+'\nMessage: '+form.message.data)
-        flash('Thank you for your message. We will get back to you soon!', 'success')
+        if "SEO" in form.message.data:
+            flash('Thank you for your message. We will get back to you soon!', 'success')
+            return redirect(url_for('contact'))
+        else:
+            apobj.add('slack://'+apprise_key+'?footer=no')
+            apobj.notify(title='Workforce Map Contact Submission', body='Name: '+form.name.data+'\nEmail: '+form.email.data+'\nInquiry Type: '+form.inquiry_type.data+'\nMessage: '+form.message.data)
+            flash('Thank you for your message. We will get back to you soon!', 'success')
 
-        return redirect(url_for('contact'))
+            return redirect(url_for('contact'))
     return render_template('pages/contact.html', form=form)
 
 if os.getenv('local_testing'):
