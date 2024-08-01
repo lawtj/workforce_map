@@ -1,4 +1,5 @@
-from flask import Flask, render_template, redirect, url_for, flash
+from flask import Flask, render_template, redirect, url_for, flash, request
+import akismet
 from flask_wtf import FlaskForm
 from wtforms import StringField, TextAreaField, SelectField, SubmitField
 from wtforms.validators import DataRequired, Email
@@ -14,11 +15,12 @@ apobj = apprise.Apprise()
 from dotenv import load_dotenv
 load_dotenv()
 apprise_key = os.getenv('apprise_key')
+akismet_api_key = os.getenv('AKISMET_API_KEY')
 
 
 
 app = Flask(__name__)
-app.config['SECRET_KEY'] = 'its-an-workforce-appppp'  # Change this to your actual secret key
+app.config['SECRET_KEY'] = apprise_key  # Change this to your actual secret key
 
 
 iframe_routes = ['gaws_iframe', 'canesca_iframe', 'ohns_iframe','wfns_iframe']
@@ -80,15 +82,23 @@ def WFNS():
 def contact():
     form = ContactForm()
     if form.validate_on_submit():
-        if "SEO" in form.message.data:
-            flash('Thank you for your message. We will get back to you soon!', 'success')
-            return redirect(url_for('contact'))
-        else:
-            apobj.add('slack://'+apprise_key+'?footer=no')
-            apobj.notify(title='Workforce Map Contact Submission', body='Name: '+form.name.data+'\nEmail: '+form.email.data+'\nInquiry Type: '+form.inquiry_type.data+'\nMessage: '+form.message.data)
-            flash('Thank you for your message. We will get back to you soon!', 'success')
-
-            return redirect(url_for('contact'))
+        with akismet.SyncClient() as akismet_client:
+            is_spam = akismet_client.comment_check(
+                user_ip=request.remote_addr,
+                user_agent=request.headers.get('User-Agent'),
+                comment_content=form.message.data,
+                comment_type='contact-form',
+                comment_author=form.name.data,
+                comment_author_email=form.email.data
+            )
+            if is_spam:
+                flash('Spam detected!', 'danger')
+                return redirect(url_for('contact'))
+            else:
+                apobj.add('slack://'+apprise_key+'?footer=no')
+                apobj.notify(title='Workforce Map Contact Submission', body='Name: '+form.name.data+'\nEmail: '+form.email.data+'\nInquiry Type: '+form.inquiry_type.data+'\nMessage: '+form.message.data)
+                flash('Thank you for your message. We will get back to you soon!', 'success')
+                return redirect(url_for('contact'))
     return render_template('pages/contact.html', form=form)
 
 if os.getenv('local_testing'):
