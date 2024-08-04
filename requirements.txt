@@ -14,3 +14,4 @@ flask_talisman
 flask_compress
 # mimetypes
 # pycap
+akismet
