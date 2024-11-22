@@ -2,3 +2,6 @@
 *.pyc
 .env
 /node_modules
+.parcel-cache
+.venv
+__pycache__
