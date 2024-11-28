@@ -1,3 +1,7 @@
+console.log("Leaflet L object:", L);
+console.log("Is L.latLng a function?", typeof L.latLng === 'function');
+console.log("Full L properties:", Object.keys(L));
+
 export function createMap(papData, isiframe, layer) {
     var southWest = L.latLng(-90, -180);
     var northEast = L.latLng(90, 180);

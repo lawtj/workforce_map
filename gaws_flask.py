@@ -8,6 +8,7 @@ import os
 import apprise
 from flask import Flask
 from flask_talisman import Talisman 
+from mailgun import send_email_mailgun
 
 apobj = apprise.Apprise()
 
@@ -94,9 +95,34 @@ def contact():
             if is_spam:
                 flash('Spam detected!', 'danger')
                 return redirect(url_for('contact'))
+            elif 'Amanda' in form.name.data:
+                flash('Amanda, you are not allowed to submit messages!', 'danger')
+                return redirect(url_for('contact'))
             else:
+                # Send notification to Slack
                 apobj.add('slack://'+apprise_key+'?footer=no')
-                apobj.notify(title='Workforce Map Contact Submission', body='Name: '+form.name.data+'\nEmail: '+form.email.data+'\nInquiry Type: '+form.inquiry_type.data+'\nMessage: '+form.message.data)
+                apobj.notify(
+                    title='Workforce Map Contact Submission', 
+                    body='Name: '+form.name.data+'\nEmail: '+form.email.data+'\nInquiry Type: '+form.inquiry_type.data+'\nMessage: '+form.message.data
+                )
+                
+                # Send email notification
+                template_vars = {
+                    'name': form.name.data,
+                    'email': form.email.data,
+                    'inquiry_type': form.inquiry_type.data,
+                    'message': form.message.data
+                }
+                
+                send_email_mailgun(
+                    subject="New Contact Form Submission - Global Anesthesia Workforce Maps",
+                    to_emails=os.getenv('NOTIFICATION_EMAIL'),  # Add this to your .env file
+                    from_email=os.getenv('FROM_EMAIL'),  # Add this to your .env file
+                    api_key=os.getenv('MAILGUN_API_KEY'),  # Add this to your .env file
+                    domain=os.getenv('MAILGUN_DOMAIN'),  # Add this to your .env file
+                    template_vars=template_vars
+                )
+                
                 flash('Thank you for your message. We will get back to you soon!', 'success')
                 return redirect(url_for('contact'))
     return render_template('pages/contact.html', form=form)

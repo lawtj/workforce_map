@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Contact Form Submission</title>
+</head>
+<body>
+    <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+        <h1 style="color: #333;">New Contact Form Submission</h1>
+        
+        <div style="background-color: #f5f5f5; padding: 20px; margin: 20px 0; border-radius: 5px;">
+            <h2 style="color: #444; margin-top: 0;">Contact Details:</h2>
+            <p style="margin: 10px 0;">
+                <strong>Name:</strong> {{ name }}
+            </p>
+            <p style="margin: 10px 0;">
+                <strong>Email:</strong> {{ email }}
+            </p>
+            <p style="margin: 10px 0;">
+                <strong>Inquiry Type:</strong> {{ inquiry_type }}
+            </p>
+            
+            <h3 style="color: #444; margin-top: 20px;">Message:</h3>
+            <p style="color: #666; background-color: white; padding: 15px; border-radius: 3px;">
+                {{ message }}
+            </p>
+        </div>
+        
+        <p style="color: #888; font-size: 12px; border-top: 1px solid #ddd; padding-top: 15px; margin-top: 20px;">
+            This message was sent from the Global Anesthesia Workforce Maps contact form.
+        </p>
+    </div>
+</body>
+</html> 

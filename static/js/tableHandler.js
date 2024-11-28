@@ -100,4 +100,4 @@ export function createTableHandler(data, config, search) {
         }
     }
 
-window.createTableHandler = createTableHandler;
+// window.createTableHandler = createTableHandler;
