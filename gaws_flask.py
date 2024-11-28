@@ -8,7 +8,7 @@ import os
 import apprise
 from flask import Flask
 from flask_talisman import Talisman 
-from mailgun import send_email_mailgun
+from src.mailgun import send_email_mailgun
 
 apobj = apprise.Apprise()
 
@@ -79,6 +79,8 @@ def OHNS():
 def WFNS():
     return render_template('pages/wfns.html')
 
+thanksmsg = 'Thank you for your message. We will get back to you soon!'
+
 @app.route('/contact', methods=['GET', 'POST'])
 def contact():
     form = ContactForm()
@@ -93,10 +95,10 @@ def contact():
                 comment_author_email=form.email.data
             )
             if is_spam:
-                flash('Spam detected!', 'danger')
+                flash(thanksmsg, 'danger')
                 return redirect(url_for('contact'))
             elif 'Amanda' in form.name.data:
-                flash('Amanda, you are not allowed to submit messages!', 'danger')
+                flash(thanksmsg, 'danger')
                 return redirect(url_for('contact'))
             else:
                 # Send notification to Slack
@@ -123,7 +125,7 @@ def contact():
                     template_vars=template_vars
                 )
                 
-                flash('Thank you for your message. We will get back to you soon!', 'success')
+                flash(thanksmsg, 'success')
                 return redirect(url_for('contact'))
     return render_template('pages/contact.html', form=form)
 
